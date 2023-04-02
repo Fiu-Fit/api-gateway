@@ -1,3 +1,4 @@
+import grpc from '@grpc/grpc-js';
 import {
   ArgumentsHost,
   Catch,
@@ -5,7 +6,6 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
-import * as grpc from 'grpc';
 
 export interface IRpcException {
   message: string;
