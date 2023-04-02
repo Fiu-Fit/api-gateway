@@ -14,7 +14,6 @@ import { Observable } from 'rxjs';
 import {
   Page,
   RoleNameToEnum,
-  USER_PACKAGE_NAME,
   USER_SERVICE_NAME,
   User,
   UserServiceClient,
@@ -24,7 +23,7 @@ import { UserDto } from './user.dto';
 
 @Controller('users')
 export class UserController implements OnModuleInit, UserServiceController {
-  @Inject(USER_PACKAGE_NAME)
+  @Inject(USER_SERVICE_NAME)
   private readonly client: ClientGrpc;
 
   private userService: UserServiceClient;

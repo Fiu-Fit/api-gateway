@@ -24,13 +24,14 @@
     "lint:prettier": "prettier --config .prettierrc.json --ignore-path .prettierignore --write",
     "lint:eslint": "eslint --fix -c .eslintrc.json --ignore-path .eslintignore",
     "lint": "yarn run lint:prettier && yarn run lint:eslint",
-    "proto:install": "yarn add ssh://git@github.com:Fiu-Fit/common.git",
+    "common:install": "yarn add ssh://git@github.com:Fiu-Fit/common.git && yarn",
     "proto:user": "npx protoc --plugin=node_modules/.bin/protoc-gen-ts_proto -I=./node_modules/common/protos --ts_proto_out=src/modules/user/interfaces/ node_modules/common/protos/user.proto --ts_proto_opt=nestJs=true --ts_proto_opt=fileSuffix=.pb"
   },
   "prisma": {
     "seed": "ts-node ./prisma/seeder.ts"
   },
   "dependencies": {
+    "@fiu-fit/common": "ssh://git@github.com:Fiu-Fit/common.git",
     "@grpc/grpc-js": "^1.8.13",
     "@grpc/proto-loader": "^0.7.6",
     "@nestjs/common": "^9.3.12",
@@ -41,7 +42,6 @@
     "@nestjs/platform-express": "^9.3.12",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
-    "common": "ssh://git@github.com:Fiu-Fit/common.git",
     "express": "^4.18.2",
     "husky": "^7.0.2",
     "passport": "^0.6.0",

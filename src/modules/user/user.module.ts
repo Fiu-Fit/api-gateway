@@ -1,6 +1,7 @@
+import { DEFAULT_PROTO_PATH } from '@fiu-fit/common';
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { USER_PACKAGE_NAME, protobufPackage } from './interfaces/user.pb';
+import { USER_SERVICE_NAME, protobufPackage } from './interfaces/user.pb';
 import { UserController } from './user.controller';
 
 @Module({
@@ -8,11 +9,11 @@ import { UserController } from './user.controller';
     // Import other modules here
     ClientsModule.register([
       {
-        name:      USER_PACKAGE_NAME,
+        name:      USER_SERVICE_NAME,
         transport: Transport.GRPC,
         options:   {
           package:   protobufPackage,
-          protoPath: 'node_modules/common/protos/user.proto',
+          protoPath: `${DEFAULT_PROTO_PATH}/user.proto`,
         },
       },
     ]),
