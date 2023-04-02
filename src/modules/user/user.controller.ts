@@ -8,9 +8,11 @@ import {
   Param,
   ParseIntPipe,
   Put,
+  UseFilters,
 } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
 import { Observable } from 'rxjs';
+import { AllGlobalExceptionsFilter } from '../../shared/rpc-exceptions-filter';
 import {
   Page,
   RoleNameToEnum,
@@ -21,6 +23,7 @@ import {
 } from './interfaces/user.pb';
 import { UserDto } from './user.dto';
 
+@UseFilters(AllGlobalExceptionsFilter)
 @Controller('users')
 export class UserController implements OnModuleInit, UserServiceController {
   @Inject(USER_SERVICE_NAME)
