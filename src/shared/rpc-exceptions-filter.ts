@@ -12,19 +12,6 @@ export interface IRpcException {
   code: number;
 }
 
-// export class FitRpcException extends RpcException implements IRpcException {
-//   public status: number;
-//
-//   constructor(message: string, statusCode: HttpStatus) {
-//     super(message);
-//     this.initStatusCode(statusCode);
-//   }
-//
-//   private initStatusCode(statusCode: HttpStatus) {
-//     this.status = statusCode;
-//   }
-// }
-
 export const GrpcToHttpExceptionMapping: Record<string, HttpStatus> = {
   [grpc.status.OK]:                  HttpStatus.OK,
   [grpc.status.CANCELLED]:           HttpStatus.INTERNAL_SERVER_ERROR,
