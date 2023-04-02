@@ -1,9 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import {
-  USER_PACKAGE_NAME,
-  userProtoBufPackage,
-} from './interfaces/user.interfaces';
+import { USER_PACKAGE_NAME, protobufPackage } from './interfaces/user.pb';
 import { UserController } from './user.controller';
 
 @Module({
@@ -14,8 +11,8 @@ import { UserController } from './user.controller';
         name:      USER_PACKAGE_NAME,
         transport: Transport.GRPC,
         options:   {
-          package:   userProtoBufPackage,
-          protoPath: './src/modules/user/interfaces/user.proto',
+          package:   protobufPackage,
+          protoPath: 'node_modules/common/protos/user.proto',
         },
       },
     ]),
