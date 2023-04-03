@@ -17,7 +17,6 @@ import { AllGlobalExceptionsFilter } from '../../shared/rpc-exceptions-filter';
 import { AuthGuard } from '../auth/auth.guard';
 import {
   Page,
-  RoleNameToEnum,
   USER_SERVICE_NAME,
   User,
   UserServiceClient,
@@ -66,7 +65,6 @@ export class UserController implements OnModuleInit, UserServiceController {
     return this.userService.put({
       id,
       ...user,
-      role: RoleNameToEnum[user.role],
     });
   }
 }
