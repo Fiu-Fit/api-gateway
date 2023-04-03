@@ -1,4 +1,11 @@
-import { IsEmail, IsNotEmpty, IsString, MaxLength } from 'class-validator';
+import {
+  IsEmail,
+  IsEnum,
+  IsNotEmpty,
+  IsString,
+  MaxLength,
+} from 'class-validator';
+import { Role } from './interfaces/user.pb';
 
 export class UserDto {
   @IsEmail()
@@ -17,7 +24,7 @@ export class UserDto {
   @MaxLength(10)
   lastName: string;
 
-  @IsString()
+  @IsEnum(Role)
   @IsNotEmpty()
-  role: string;
+  role: Role;
 }

@@ -17,18 +17,6 @@ export enum Role {
   UNRECOGNIZED = -1,
 }
 
-export const RoleEnumToName = {
-  0: 'Admin',
-  1: 'Athlete',
-  2: 'Trainer',
-};
-
-export const RoleNameToEnum: Record<string, number> = {
-  Admin: 0,
-  Athlete: 1,
-  Trainer: 2,
-};
-
 export interface UserServiceController {
   findById(id: number): Promise<User> | Observable<User> | User;
 
@@ -38,6 +26,7 @@ export interface UserServiceController {
 
   deleteById(id: number): Promise<User> | Observable<User> | User;
 }
+
 export interface UserId {
   id: number;
 }
@@ -68,6 +57,7 @@ export interface UserServiceClient {
 
   deleteById(request: UserId): Observable<User>;
 }
+
 export function UserServiceControllerMethods() {
   return function (constructor: Function) {
     const grpcMethods: string[] = ['findById', 'findAll', 'put', 'deleteById'];

@@ -15,7 +15,6 @@ import { Observable } from 'rxjs';
 import { AllGlobalExceptionsFilter } from '../../shared/rpc-exceptions-filter';
 import {
   Page,
-  RoleNameToEnum,
   USER_SERVICE_NAME,
   User,
   UserServiceClient,
@@ -63,7 +62,6 @@ export class UserController implements OnModuleInit, UserServiceController {
     return this.userService.put({
       id,
       ...user,
-      role: RoleNameToEnum[user.role],
     });
   }
 }
