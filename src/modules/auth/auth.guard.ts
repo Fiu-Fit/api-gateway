@@ -17,7 +17,7 @@ export class AuthGuard implements CanActivate {
 
   public async canActivate(ctx: ExecutionContext): Promise<boolean> | never {
     const req: Request = ctx.switchToHttp().getRequest();
-    const authorization: string | undefined = req.headers['authorization'];
+    const authorization: string | undefined = req.headers.authorization;
 
     if (!authorization) {
       throw new UnauthorizedException();
