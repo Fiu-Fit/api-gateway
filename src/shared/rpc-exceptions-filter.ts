@@ -1,4 +1,4 @@
-import grpc from '@grpc/grpc-js';
+import { status } from '@grpc/grpc-js';
 import {
   ArgumentsHost,
   Catch,
@@ -13,23 +13,23 @@ export interface IRpcException {
 }
 
 export const GrpcToHttpExceptionMapping: Record<string, HttpStatus> = {
-  [grpc.status.OK]:                  HttpStatus.OK,
-  [grpc.status.CANCELLED]:           HttpStatus.INTERNAL_SERVER_ERROR,
-  [grpc.status.UNKNOWN]:             HttpStatus.INTERNAL_SERVER_ERROR,
-  [grpc.status.INVALID_ARGUMENT]:    HttpStatus.BAD_REQUEST,
-  [grpc.status.DEADLINE_EXCEEDED]:   HttpStatus.GATEWAY_TIMEOUT,
-  [grpc.status.NOT_FOUND]:           HttpStatus.NOT_FOUND,
-  [grpc.status.ALREADY_EXISTS]:      HttpStatus.CONFLICT,
-  [grpc.status.PERMISSION_DENIED]:   HttpStatus.FORBIDDEN,
-  [grpc.status.UNAUTHENTICATED]:     HttpStatus.UNAUTHORIZED,
-  [grpc.status.RESOURCE_EXHAUSTED]:  HttpStatus.TOO_MANY_REQUESTS,
-  [grpc.status.FAILED_PRECONDITION]: HttpStatus.BAD_REQUEST,
-  [grpc.status.ABORTED]:             HttpStatus.CONFLICT,
-  [grpc.status.OUT_OF_RANGE]:        HttpStatus.BAD_REQUEST,
-  [grpc.status.UNIMPLEMENTED]:       HttpStatus.NOT_IMPLEMENTED,
-  [grpc.status.INTERNAL]:            HttpStatus.INTERNAL_SERVER_ERROR,
-  [grpc.status.UNAVAILABLE]:         HttpStatus.SERVICE_UNAVAILABLE,
-  [grpc.status.DATA_LOSS]:           HttpStatus.INTERNAL_SERVER_ERROR,
+  [status.OK]:                  HttpStatus.OK,
+  [status.CANCELLED]:           HttpStatus.INTERNAL_SERVER_ERROR,
+  [status.UNKNOWN]:             HttpStatus.INTERNAL_SERVER_ERROR,
+  [status.INVALID_ARGUMENT]:    HttpStatus.BAD_REQUEST,
+  [status.DEADLINE_EXCEEDED]:   HttpStatus.GATEWAY_TIMEOUT,
+  [status.NOT_FOUND]:           HttpStatus.NOT_FOUND,
+  [status.ALREADY_EXISTS]:      HttpStatus.CONFLICT,
+  [status.PERMISSION_DENIED]:   HttpStatus.FORBIDDEN,
+  [status.UNAUTHENTICATED]:     HttpStatus.UNAUTHORIZED,
+  [status.RESOURCE_EXHAUSTED]:  HttpStatus.TOO_MANY_REQUESTS,
+  [status.FAILED_PRECONDITION]: HttpStatus.BAD_REQUEST,
+  [status.ABORTED]:             HttpStatus.CONFLICT,
+  [status.OUT_OF_RANGE]:        HttpStatus.BAD_REQUEST,
+  [status.UNIMPLEMENTED]:       HttpStatus.NOT_IMPLEMENTED,
+  [status.INTERNAL]:            HttpStatus.INTERNAL_SERVER_ERROR,
+  [status.UNAVAILABLE]:         HttpStatus.SERVICE_UNAVAILABLE,
+  [status.DATA_LOSS]:           HttpStatus.INTERNAL_SERVER_ERROR,
 };
 
 @Catch()
