@@ -1,11 +1,13 @@
 import { DEFAULT_PROTO_PATH } from '@fiu-fit/common';
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import { AuthModule } from '../auth/auth.module';
 import { USER_SERVICE_NAME, protobufPackage } from './interfaces/user.pb';
 import { UserController } from './user.controller';
 
 @Module({
   imports: [
+    AuthModule,
     // Import other modules here
     ClientsModule.register([
       {
