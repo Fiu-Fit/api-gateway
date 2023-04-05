@@ -60,7 +60,7 @@ export function AuthServiceControllerMethods() {
         constructor.prototype,
         method
       );
-      GrpcMethod('AuthService', method)(
+      GrpcMethod(AUTH_SERVICE_NAME, method)(
         constructor.prototype[method],
         method,
         descriptor
@@ -72,7 +72,7 @@ export function AuthServiceControllerMethods() {
         constructor.prototype,
         method
       );
-      GrpcStreamMethod('AuthService', method)(
+      GrpcStreamMethod(AUTH_SERVICE_NAME, method)(
         constructor.prototype[method],
         method,
         descriptor
