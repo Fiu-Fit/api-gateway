@@ -44,4 +44,9 @@ export class AuthController implements OnModuleInit, AuthServiceController {
   ): Promise<Token> | Observable<Token> | Token {
     return this.authService.register(newUser);
   }
+
+  @Post('logout')
+  logout() {
+    return this.authService.logout();
+  }
 }
