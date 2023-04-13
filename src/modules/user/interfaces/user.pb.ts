@@ -1,12 +1,6 @@
 /* eslint-disable */
 import { GrpcMethod, GrpcStreamMethod } from '@nestjs/microservices';
 import { Observable } from 'rxjs';
-import { UserDto } from '../user.dto';
-
-export interface Page<T> {
-  count: number;
-  rows: T[];
-}
 
 export const protobufPackage = 'user';
 
@@ -15,16 +9,6 @@ export enum Role {
   Athlete = 1,
   Trainer = 2,
   UNRECOGNIZED = -1,
-}
-
-export interface UserServiceController {
-  findById(id: number): Promise<User> | Observable<User> | User;
-
-  findAll(): Promise<UserPages> | Observable<UserPages> | UserPages;
-
-  put(id: number, user: UserDto): Promise<User> | Observable<User> | User;
-
-  deleteById(id: number): Promise<User> | Observable<User> | User;
 }
 
 export interface UserId {
@@ -56,6 +40,18 @@ export interface UserServiceClient {
   put(request: User): Observable<User>;
 
   deleteById(request: UserId): Observable<User>;
+}
+
+export interface UserServiceController {
+  findById(request: UserId): Promise<User> | Observable<User> | User;
+
+  findAll(
+    request: Empty
+  ): Promise<UserPages> | Observable<UserPages> | UserPages;
+
+  put(request: User): Promise<User> | Observable<User> | User;
+
+  deleteById(request: UserId): Promise<User> | Observable<User> | User;
 }
 
 export function UserServiceControllerMethods() {
