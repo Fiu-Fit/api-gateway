@@ -1,3 +1,4 @@
+import { Page } from '@fiu-fit/common';
 import {
   Body,
   Controller,
@@ -16,18 +17,16 @@ import { Observable } from 'rxjs';
 import { AllGlobalExceptionsFilter } from '../../shared/rpc-exceptions-filter';
 import { AuthGuard } from '../auth/auth.guard';
 import {
-  Page,
   USER_SERVICE_NAME,
   User,
   UserServiceClient,
-  UserServiceController,
 } from './interfaces/user.pb';
 import { UserDto } from './user.dto';
 
 @UseFilters(AllGlobalExceptionsFilter)
 @UseGuards(AuthGuard)
 @Controller('users')
-export class UserController implements OnModuleInit, UserServiceController {
+export class UserController implements OnModuleInit {
   @Inject(USER_SERVICE_NAME)
   private readonly client: ClientGrpc;
 
