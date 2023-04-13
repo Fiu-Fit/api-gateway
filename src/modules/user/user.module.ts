@@ -14,6 +14,7 @@ import { UserController } from './user.controller';
         name:      USER_SERVICE_NAME,
         transport: Transport.GRPC,
         options:   {
+          url:       process.env.USER_SERVICE_URL,
           package:   protobufPackage,
           protoPath: `${DEFAULT_PROTO_PATH}/user.proto`,
         },

@@ -13,6 +13,7 @@ import { AUTH_SERVICE_NAME, protobufPackage } from './interfaces/auth.pb';
         name:      AUTH_SERVICE_NAME,
         transport: Transport.GRPC,
         options:   {
+          url:       process.env.USER_SERVICE_URL,
           package:   protobufPackage,
           protoPath: `${DEFAULT_PROTO_PATH}/auth.proto`,
         },
