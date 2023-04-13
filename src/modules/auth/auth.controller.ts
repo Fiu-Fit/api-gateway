@@ -12,7 +12,6 @@ import { AllGlobalExceptionsFilter } from '../../shared/rpc-exceptions-filter';
 import {
   AUTH_SERVICE_NAME,
   AuthServiceClient,
-  AuthServiceController,
   LoginRequest,
   RegisterRequest,
   Token,
@@ -20,7 +19,7 @@ import {
 
 @UseFilters(AllGlobalExceptionsFilter)
 @Controller('auth')
-export class AuthController implements OnModuleInit, AuthServiceController {
+export class AuthController implements OnModuleInit {
   @Inject(AUTH_SERVICE_NAME)
   private readonly client: ClientGrpc;
 
@@ -43,5 +42,10 @@ export class AuthController implements OnModuleInit, AuthServiceController {
     @Body() newUser: RegisterRequest
   ): Promise<Token> | Observable<Token> | Token {
     return this.authService.register(newUser);
+  }
+
+  @Post('logout')
+  logout() {
+    return this.authService.logout({});
   }
 }
