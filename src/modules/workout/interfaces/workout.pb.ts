@@ -17,6 +17,14 @@ export interface Workout {
   authorId: number;
 }
 
+export interface WorkoutDto {
+  name: string;
+  duration: number;
+  category: string;
+  athleteIds: number[];
+  authorId: number;
+}
+
 export interface Empty {}
 
 export interface WorkoutList {
@@ -31,7 +39,7 @@ export interface WorkoutPutRequest {
 export const WORKOUT_PACKAGE_NAME = 'workout';
 
 export interface WorkoutServiceClient {
-  create(request: Workout): Observable<Workout>;
+  create(request: WorkoutDto): Observable<Workout>;
 
   findById(request: WorkoutId): Observable<Workout>;
 
@@ -43,7 +51,7 @@ export interface WorkoutServiceClient {
 }
 
 export interface WorkoutServiceController {
-  create(request: Workout): Promise<Workout> | Observable<Workout> | Workout;
+  create(request: WorkoutDto): Promise<Workout> | Observable<Workout> | Workout;
 
   findById(
     request: WorkoutId
