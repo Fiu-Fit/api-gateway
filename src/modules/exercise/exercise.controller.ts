@@ -31,7 +31,9 @@ export class ExerciseController implements OnModuleInit {
   private exerciseService: ExerciseServiceClient;
 
   public onModuleInit(): void {
-    this.client.getService<ExerciseServiceClient>(EXERCISE_SERVICE_NAME);
+    this.exerciseService = this.client.getService<ExerciseServiceClient>(
+      EXERCISE_SERVICE_NAME
+    );
   }
 
   @Post('create')

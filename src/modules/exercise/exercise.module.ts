@@ -1,6 +1,7 @@
 import { DEFAULT_PROTO_PATH } from '@fiu-fit/common';
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import { ExerciseController } from './exercise.controller';
 import {
   EXERCISE_SERVICE_NAME,
   protobuffPackage,
@@ -20,5 +21,6 @@ import {
       },
     ]),
   ],
+  controllers: [ExerciseController],
 })
 export class ExerciseModule {}
