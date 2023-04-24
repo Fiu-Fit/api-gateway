@@ -31,9 +31,9 @@ export interface ExerciseList {
 export interface ExerciseServiceClient {
   create(request: ExerciseDto): Observable<Exercise>;
 
-  findById(request: ExerciseId): Observable<Exercise>;
-
   findAll(request: Empty): Observable<ExerciseList>;
+
+  findById(request: ExerciseId): Observable<Exercise>;
 
   put(request: ExerciseDto): Observable<Exercise>;
 

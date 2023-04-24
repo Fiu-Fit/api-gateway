@@ -1,16 +1,9 @@
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
-
 export class ExerciseDTO {
-  @IsNumber()
-  id?: number;
+  id: number;
 
-  @IsString()
-  @IsNotEmpty()
   name: string;
 
-  @IsString()
-  description?: string;
+  description: string;
 
-  @IsString()
-  category?: string;
+  category: string;
 }
