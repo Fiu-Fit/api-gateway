@@ -1,13 +1,17 @@
 import {
   Body,
   Controller,
+  HttpCode,
+  HttpStatus,
   Inject,
   OnModuleInit,
   Post,
+  Res,
   UseFilters,
 } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
-import { Observable } from 'rxjs';
+import { Response as ExpressResponse } from 'express';
+import { Observable, lastValueFrom } from 'rxjs';
 import { AllGlobalExceptionsFilter } from '../../shared/rpc-exceptions-filter';
 import {
   AUTH_SERVICE_NAME,
@@ -15,6 +19,7 @@ import {
   LoginRequest,
   RegisterRequest,
   Token,
+  ValidResponse,
 } from './interfaces/auth.pb';
 
 @UseFilters(AllGlobalExceptionsFilter)
@@ -31,10 +36,17 @@ export class AuthController implements OnModuleInit {
   }
 
   @Post('login')
-  login(
-    @Body() loginRequest: LoginRequest
-  ): Promise<Token> | Observable<Token> | Token {
-    return this.authService.login(loginRequest);
+  async login(
+    @Body() loginRequest: LoginRequest,
+    @Res({ passthrough: true }) res: ExpressResponse
+  ): Promise<Token> {
+    const token = await lastValueFrom(this.authService.login(loginRequest));
+    res.cookie('token', token.token, {
+      httpOnly: true,
+      expires:  new Date(Date.now() + 60 * 60 * 24),
+      path:     '/',
+    });
+    return token;
   }
 
   @Post('register')
@@ -47,5 +59,11 @@ export class AuthController implements OnModuleInit {
   @Post('logout')
   logout() {
     return this.authService.logout({});
+  }
+
+  @Post('validate')
+  @HttpCode(HttpStatus.OK)
+  validate(@Body() token: Token): Observable<ValidResponse> {
+    return this.authService.validate(token);
   }
 }
