@@ -55,7 +55,7 @@ export class ExerciseController implements OnModuleInit {
     return this.exerciseService.findById({ id });
   }
 
-  @Put('/')
+  @Put(':id')
   put(
     @Body() exercise: ExerciseDto
   ): Promise<Exercise> | Observable<Exercise> | Exercise {

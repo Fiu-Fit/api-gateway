@@ -17,6 +17,7 @@ export interface Exercise extends Document {
 }
 
 export interface ExerciseDto {
+  id: number;
   name: string;
   description: string;
   category: string;
