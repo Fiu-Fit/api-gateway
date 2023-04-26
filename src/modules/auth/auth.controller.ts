@@ -6,12 +6,10 @@ import {
   Inject,
   OnModuleInit,
   Post,
-  Res,
   UseFilters,
 } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
-import { Response as ExpressResponse } from 'express';
-import { Observable, lastValueFrom } from 'rxjs';
+import { Observable } from 'rxjs';
 import { AllGlobalExceptionsFilter } from '../../shared/rpc-exceptions-filter';
 import {
   AUTH_SERVICE_NAME,
@@ -37,17 +35,10 @@ export class AuthController implements OnModuleInit {
 
   @Post('login')
   @HttpCode(HttpStatus.OK)
-  async login(
-    @Body() loginRequest: LoginRequest,
-    @Res({ passthrough: true }) res: ExpressResponse
-  ): Promise<Token> {
-    const token = await lastValueFrom(this.authService.login(loginRequest));
-    res.cookie('token', token.token, {
-      httpOnly: true,
-      expires:  new Date(Date.now() + 60 * 60 * 24),
-      path:     '/',
-    });
-    return token;
+  login(
+    @Body() loginRequest: LoginRequest
+  ): Promise<Token> | Observable<Token> | Token {
+    return this.authService.login(loginRequest);
   }
 
   @Post('register')
