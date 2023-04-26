@@ -1,6 +1,8 @@
 import {
   Body,
   Controller,
+  HttpCode,
+  HttpStatus,
   Inject,
   OnModuleInit,
   Post,
@@ -15,6 +17,7 @@ import {
   LoginRequest,
   RegisterRequest,
   Token,
+  ValidResponse,
 } from './interfaces/auth.pb';
 
 @UseFilters(AllGlobalExceptionsFilter)
@@ -31,6 +34,7 @@ export class AuthController implements OnModuleInit {
   }
 
   @Post('login')
+  @HttpCode(HttpStatus.OK)
   login(
     @Body() loginRequest: LoginRequest
   ): Promise<Token> | Observable<Token> | Token {
@@ -47,5 +51,11 @@ export class AuthController implements OnModuleInit {
   @Post('logout')
   logout() {
     return this.authService.logout({});
+  }
+
+  @Post('validate')
+  @HttpCode(HttpStatus.OK)
+  validate(@Body() token: Token): Observable<ValidResponse> {
+    return this.authService.validate(token);
   }
 }
