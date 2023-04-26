@@ -36,6 +36,7 @@ export class AuthController implements OnModuleInit {
   }
 
   @Post('login')
+  @HttpCode(HttpStatus.OK)
   async login(
     @Body() loginRequest: LoginRequest,
     @Res({ passthrough: true }) res: ExpressResponse
