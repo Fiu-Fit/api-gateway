@@ -6,7 +6,6 @@ import {
   Inject,
   OnModuleInit,
   Param,
-  ParseIntPipe,
   Post,
   Put,
   UseFilters,
@@ -17,7 +16,6 @@ import { AllGlobalExceptionsFilter } from '../../shared/rpc-exceptions-filter';
 import {
   EXERCISE_SERVICE_NAME,
   Exercise,
-  ExerciseDto,
   ExerciseList,
   ExerciseServiceClient,
 } from './interfaces/exercise.pb';
@@ -38,7 +36,7 @@ export class ExerciseController implements OnModuleInit {
 
   @Post('create')
   create(
-    @Body() exercise: ExerciseDto
+    @Body() exercise: Exercise
   ): Promise<Exercise> | Observable<Exercise> | Exercise {
     return this.exerciseService.create(exercise);
   }
@@ -50,21 +48,22 @@ export class ExerciseController implements OnModuleInit {
 
   @Get(':id')
   findById(
-    @Param('id', ParseIntPipe) id: number
+    @Param('id') id: string
   ): Promise<Exercise> | Observable<Exercise> | Exercise {
     return this.exerciseService.findById({ id });
   }
 
   @Put(':id')
   put(
-    @Body() exercise: ExerciseDto
+    @Param('id') id: string,
+    @Body() exercise: Exercise
   ): Promise<Exercise> | Observable<Exercise> | Exercise {
-    return this.exerciseService.put(exercise);
+    return this.exerciseService.put({ id, exercise });
   }
 
   @Delete(':id')
   deleteById(
-    @Param('id', ParseIntPipe) id: number
+    @Param('id') id: string
   ): Promise<Exercise> | Observable<Exercise> | Exercise {
     return this.exerciseService.deleteById({ id });
   }
