@@ -47,7 +47,7 @@ export interface ExerciseServiceClient {
 
   findByName(request: ExerciseName): Observable<Exercise>;
 
-  findByCategory(request: ExerciseCategory): Observable<Exercise>;
+  findByCategory(request: ExerciseCategory): Observable<ExerciseList>;
 }
 
 export interface ExerciseServiceController {
@@ -77,7 +77,7 @@ export interface ExerciseServiceController {
 
   findByCategory(
     request: ExerciseCategory
-  ): Promise<Exercise> | Observable<Exercise> | Exercise;
+  ): Promise<ExerciseList> | Observable<ExerciseList> | ExerciseList;
 }
 
 export function ExerciseServiceControllerMethods() {
@@ -85,11 +85,11 @@ export function ExerciseServiceControllerMethods() {
     const grpcMethods: string[] = [
       'create',
       'findById',
+      'findByName',
+      'findyByCategory',
       'findAll',
       'put',
       'deleteById',
-      'getByName',
-      'getByCategory',
     ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(

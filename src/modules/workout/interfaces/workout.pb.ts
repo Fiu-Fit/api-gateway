@@ -8,10 +8,19 @@ export interface WorkoutId {
   id: string;
 }
 
+export interface WorkoutName {
+  name: string;
+}
+
+export interface WorkoutCategory {
+  category: string;
+}
+
 export interface Workout {
   name: string;
   description: string;
   duration: number;
+  difficulty: number;
   category: string;
   athleteIds: number[];
   authorId: number;
@@ -21,6 +30,7 @@ export interface WorkoutDto {
   name: string;
   description: string;
   duration: number;
+  difficulty: number;
   category: string;
   athleteIds: number[];
   authorId: number;

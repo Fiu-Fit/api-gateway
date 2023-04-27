@@ -78,7 +78,7 @@ export class ExerciseController implements OnModuleInit {
   @Get('category/:category')
   findByCategory(
     @Param('category') category: string
-  ): Promise<Exercise> | Observable<Exercise> | Exercise {
+  ): Promise<ExerciseList> | Observable<ExerciseList> | ExerciseList {
     return this.exerciseService.findByCategory({ category });
   }
 }
