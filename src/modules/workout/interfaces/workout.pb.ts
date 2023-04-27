@@ -14,8 +14,15 @@ export interface Workout {
   duration: number;
   difficulty: number;
   category: string;
+  exercises: ExerciseInfo[];
   athleteIds: number[];
   authorId: number;
+}
+
+export interface ExerciseInfo {
+  exerciseId: string;
+  repetitions: number;
+  duration: number;
 }
 
 export interface WorkoutDto {
@@ -24,6 +31,7 @@ export interface WorkoutDto {
   duration: number;
   difficulty: number;
   category: string;
+  exercises: ExerciseInfo[];
   athleteIds: number[];
   authorId: number;
 }
@@ -36,7 +44,7 @@ export interface WorkoutList {
 
 export interface WorkoutPutRequest {
   id: string;
-  workout: Workout | undefined;
+  workout: Workout;
 }
 
 export interface WorkoutName {
