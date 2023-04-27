@@ -1,5 +1,4 @@
 /* eslint-disable */
-import { Document } from 'mongoose';
 import { GrpcMethod, GrpcStreamMethod } from '@nestjs/microservices';
 import { Observable } from 'rxjs';
 
