@@ -5,12 +5,12 @@ import { Observable } from 'rxjs';
 export const protobufPackage = 'workout';
 
 export interface WorkoutId {
-  id: number;
+  id: string;
 }
 
 export interface Workout {
-  id: number;
   name: string;
+  description: string;
   duration: number;
   category: string;
   athleteIds: number[];
@@ -19,6 +19,7 @@ export interface Workout {
 
 export interface WorkoutDto {
   name: string;
+  description: string;
   duration: number;
   category: string;
   athleteIds: number[];
@@ -32,16 +33,28 @@ export interface WorkoutList {
 }
 
 export interface WorkoutPutRequest {
-  id: number;
+  id: string;
   workout: Workout | undefined;
+}
+
+export interface WorkoutName {
+  name: string;
+}
+
+export interface WorkoutCategory {
+  category: string;
 }
 
 export const WORKOUT_PACKAGE_NAME = 'workout';
 
 export interface WorkoutServiceClient {
-  create(request: WorkoutDto): Observable<Workout>;
+  create(request: Workout): Observable<Workout>;
 
   findById(request: WorkoutId): Observable<Workout>;
+
+  findByName(request: WorkoutName): Observable<Workout>;
+
+  findByCategory(request: WorkoutCategory): Observable<WorkoutList>;
 
   findAll(request: Empty): Observable<WorkoutList>;
 
@@ -51,11 +64,19 @@ export interface WorkoutServiceClient {
 }
 
 export interface WorkoutServiceController {
-  create(request: WorkoutDto): Promise<Workout> | Observable<Workout> | Workout;
+  create(request: Workout): Promise<Workout> | Observable<Workout> | Workout;
 
   findById(
     request: WorkoutId
   ): Promise<Workout> | Observable<Workout> | Workout;
+
+  findByName(
+    request: WorkoutName
+  ): Promise<Workout> | Observable<Workout> | Workout;
+
+  findByCategory(
+    request: WorkoutCategory
+  ): Promise<WorkoutList> | Observable<WorkoutList> | WorkoutList;
 
   findAll(
     request: Empty
@@ -75,6 +96,8 @@ export function WorkoutServiceControllerMethods() {
     const grpcMethods: string[] = [
       'create',
       'findById',
+      'findByName',
+      'findByCategory',
       'findAll',
       'put',
       'deleteById',

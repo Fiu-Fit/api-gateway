@@ -6,7 +6,6 @@ import {
   Inject,
   OnModuleInit,
   Param,
-  ParseIntPipe,
   Post,
   Put,
   UseFilters,
@@ -23,7 +22,7 @@ import {
 } from './interfaces/workout.pb';
 
 @UseFilters(AllGlobalExceptionsFilter)
-@Controller('workout')
+@Controller('workouts')
 export class WorkoutController implements OnModuleInit {
   @Inject(WORKOUT_SERVICE_NAME)
   private readonly client: ClientGrpc;
@@ -35,6 +34,11 @@ export class WorkoutController implements OnModuleInit {
       this.client.getService<WorkoutServiceClient>(WORKOUT_SERVICE_NAME);
   }
 
+  @Get('/')
+  findAll(): Observable<WorkoutList> {
+    return this.workoutService.findAll({});
+  }
+
   @Post('create')
   create(
     @Body() workout: WorkoutDto
@@ -42,34 +46,39 @@ export class WorkoutController implements OnModuleInit {
     return this.workoutService.create(workout);
   }
 
-  @Get()
-  findAll(): Observable<WorkoutList> {
-    return this.workoutService.findAll({});
-  }
-
-  @Delete(':id')
-  deleteById(
-    @Param('id', ParseIntPipe) id: number
-  ): Promise<Workout> | Observable<Workout> | Workout {
-    return this.workoutService.deleteById({ id });
-  }
-
   @Get(':id')
   findById(
-    @Param('id', ParseIntPipe) id: number
+    @Param('id') id: string
   ): Promise<Workout> | Observable<Workout> | Workout {
     return this.workoutService.findById({ id });
   }
 
+  @Delete(':id')
+  deleteById(
+    @Param('id') id: string
+  ): Promise<Workout> | Observable<Workout> | Workout {
+    return this.workoutService.deleteById({ id });
+  }
+
+  @Get('name/:name')
+  findByName(
+    @Param('name') name: string
+  ): Promise<Workout> | Observable<Workout> | Workout {
+    return this.workoutService.findByName({ name });
+  }
+
+  @Get('category/:category')
+  findByCategory(
+    @Param('category') category: string
+  ): Promise<WorkoutList> | Observable<WorkoutList> | WorkoutList {
+    return this.workoutService.findByCategory({ category });
+  }
+
   @Put(':id')
   put(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() workout: WorkoutDto
+    @Param('id') id: string,
+    @Body() workout: Workout
   ): Promise<Workout> | Observable<Workout> | Workout {
-    return this.workoutService.put({
-      id,
-      ...workout,
-      workout: undefined,
-    });
+    return this.workoutService.put({ id, workout });
   }
 }

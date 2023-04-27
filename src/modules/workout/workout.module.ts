@@ -2,6 +2,7 @@ import { DEFAULT_PROTO_PATH } from '@fiu-fit/common';
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { WORKOUT_SERVICE_NAME, protobufPackage } from './interfaces/workout.pb';
+import { WorkoutController } from './workout.controller';
 
 @Module({
   imports: [
@@ -17,5 +18,6 @@ import { WORKOUT_SERVICE_NAME, protobufPackage } from './interfaces/workout.pb';
       },
     ]),
   ],
+  controllers: [WorkoutController],
 })
 export class WorkoutModule {}
