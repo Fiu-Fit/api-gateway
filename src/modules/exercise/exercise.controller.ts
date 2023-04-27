@@ -67,4 +67,18 @@ export class ExerciseController implements OnModuleInit {
   ): Promise<Exercise> | Observable<Exercise> | Exercise {
     return this.exerciseService.deleteById({ id });
   }
+
+  @Get('name/:name')
+  findByName(
+    @Param('name') name: string
+  ): Promise<Exercise> | Observable<Exercise> | Exercise {
+    return this.exerciseService.findByName({ name });
+  }
+
+  @Get('category/:category')
+  findByCategory(
+    @Param('category') category: string
+  ): Promise<Exercise> | Observable<Exercise> | Exercise {
+    return this.exerciseService.findByCategory({ category });
+  }
 }

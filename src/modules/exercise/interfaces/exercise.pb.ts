@@ -9,6 +9,14 @@ export interface ExerciseId {
   id: string;
 }
 
+export interface ExerciseName {
+  name: string;
+}
+
+export interface ExerciseCategory {
+  category: string;
+}
+
 export interface Exercise {
   name: string;
   description: string;
@@ -36,6 +44,10 @@ export interface ExerciseServiceClient {
   put(request: ExercisePutRequest): Observable<Exercise>;
 
   deleteById(request: ExerciseId): Observable<Exercise>;
+
+  findByName(request: ExerciseName): Observable<Exercise>;
+
+  findByCategory(request: ExerciseCategory): Observable<Exercise>;
 }
 
 export interface ExerciseServiceController {
@@ -58,6 +70,14 @@ export interface ExerciseServiceController {
   deleteById(
     request: ExerciseId
   ): Promise<Exercise> | Observable<Exercise> | Exercise;
+
+  findByName(
+    request: ExerciseName
+  ): Promise<Exercise> | Observable<Exercise> | Exercise;
+
+  findByCategory(
+    request: ExerciseCategory
+  ): Promise<Exercise> | Observable<Exercise> | Exercise;
 }
 
 export function ExerciseServiceControllerMethods() {
@@ -68,6 +88,8 @@ export function ExerciseServiceControllerMethods() {
       'findAll',
       'put',
       'deleteById',
+      'getByName',
+      'getByCategory',
     ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(
