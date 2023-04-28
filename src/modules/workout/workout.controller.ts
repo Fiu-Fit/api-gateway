@@ -74,6 +74,13 @@ export class WorkoutController implements OnModuleInit {
     return this.workoutService.findByCategory({ category });
   }
 
+  @Get('exerciseId/:exerciseId')
+  findByExerciseId(
+    @Param('exerciseId') exerciseId: string
+  ): Promise<WorkoutList> | Observable<WorkoutList> | WorkoutList {
+    return this.workoutService.findByExerciseId({ exerciseId });
+  }
+
   @Put(':id')
   put(
     @Param('id') id: string,
