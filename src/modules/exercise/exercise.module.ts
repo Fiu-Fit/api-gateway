@@ -4,7 +4,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
 import { ExerciseController } from './exercise.controller';
 import {
   EXERCISE_SERVICE_NAME,
-  protobuffPackage,
+  protobufPackage,
 } from './interfaces/exercise.pb';
 
 @Module({
@@ -15,7 +15,7 @@ import {
         transport: Transport.GRPC,
         options:   {
           url:       process.env.EXERCISE_SERVICE_URL,
-          package:   protobuffPackage,
+          package:   protobufPackage,
           protoPath: `${DEFAULT_PROTO_PATH}/exercise.proto`,
         },
       },

@@ -13,11 +13,12 @@ import {
 import { ClientGrpc } from '@nestjs/microservices';
 import { Observable } from 'rxjs';
 import { AllGlobalExceptionsFilter } from '../../shared/rpc-exceptions-filter';
+import { ExerciseDto } from './exercise.dto';
 import {
   EXERCISE_SERVICE_NAME,
   Exercise,
-  ExerciseList,
   ExerciseServiceClient,
+  Exercises,
 } from './interfaces/exercise.pb';
 
 @UseFilters(AllGlobalExceptionsFilter)
@@ -36,13 +37,13 @@ export class ExerciseController implements OnModuleInit {
 
   @Post()
   create(
-    @Body() exercise: Exercise
+    @Body() exercise: ExerciseDto
   ): Promise<Exercise> | Observable<Exercise> | Exercise {
     return this.exerciseService.create(exercise);
   }
 
   @Get()
-  findAll(): Observable<ExerciseList> {
+  findAll(): Observable<Exercises> {
     return this.exerciseService.findAll({});
   }
 
@@ -56,9 +57,12 @@ export class ExerciseController implements OnModuleInit {
   @Put(':id')
   put(
     @Param('id') id: string,
-    @Body() exercise: Exercise
+    @Body() exercise: ExerciseDto
   ): Promise<Exercise> | Observable<Exercise> | Exercise {
-    return this.exerciseService.put({ id, exercise });
+    return this.exerciseService.put({
+      id,
+      ...exercise,
+    });
   }
 
   @Delete(':id')
@@ -78,7 +82,7 @@ export class ExerciseController implements OnModuleInit {
   @Get('category/:category')
   findByCategory(
     @Param('category') category: string
-  ): Promise<ExerciseList> | Observable<ExerciseList> | ExerciseList {
+  ): Promise<Exercises> | Observable<Exercises> | Exercises {
     return this.exerciseService.findByCategory({ category });
   }
 }
