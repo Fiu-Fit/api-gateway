@@ -1,11 +1,25 @@
 /* eslint-disable */
 import { GrpcMethod, GrpcStreamMethod } from '@nestjs/microservices';
 import { Observable } from 'rxjs';
+import { ExerciseDto } from '../exercise.dto';
 
-export const protobuffPackage = 'exercise';
+export const protobufPackage = 'exercise';
 
 export interface ExerciseId {
   id: string;
+}
+
+export interface Exercise {
+  id: string;
+  name: string;
+  description: string;
+  category: string;
+}
+
+export interface Empty {}
+
+export interface Exercises {
+  exercises: Exercise[];
 }
 
 export interface ExerciseName {
@@ -16,57 +30,30 @@ export interface ExerciseCategory {
   category: string;
 }
 
-export interface Exercise {
-  name: string;
-  description: string;
-  category: string;
-}
-
-export interface Empty {}
-
-export interface ExerciseList {
-  exercises: Exercise[];
-}
-
-export interface ExercisePutRequest {
-  id: string;
-  exercise: Exercise;
-}
+export const EXERCISE_PACKAGE_NAME = 'exercise';
 
 export interface ExerciseServiceClient {
-  create(request: Exercise): Observable<Exercise>;
-
-  findAll(request: Empty): Observable<ExerciseList>;
+  create(request: ExerciseDto): Observable<Exercise>;
 
   findById(request: ExerciseId): Observable<Exercise>;
 
-  put(request: ExercisePutRequest): Observable<Exercise>;
-
-  deleteById(request: ExerciseId): Observable<Exercise>;
-
   findByName(request: ExerciseName): Observable<Exercise>;
 
-  findByCategory(request: ExerciseCategory): Observable<ExerciseList>;
+  findByCategory(request: ExerciseCategory): Observable<Exercises>;
+
+  findAll(request: Empty): Observable<Exercises>;
+
+  put(request: Exercise): Observable<Exercise>;
+
+  deleteById(request: ExerciseId): Observable<Exercise>;
 }
 
 export interface ExerciseServiceController {
   create(
-    request: Exercise
+    request: ExerciseDto
   ): Promise<Exercise> | Observable<Exercise> | Exercise;
 
   findById(
-    request: ExerciseId
-  ): Promise<Exercise> | Observable<Exercise> | Exercise;
-
-  findAll(
-    request: Empty
-  ): Promise<ExerciseList> | Observable<ExerciseList> | ExerciseList;
-
-  put(
-    request: ExercisePutRequest
-  ): Promise<Exercise> | Observable<Exercise> | Exercise;
-
-  deleteById(
     request: ExerciseId
   ): Promise<Exercise> | Observable<Exercise> | Exercise;
 
@@ -76,7 +63,17 @@ export interface ExerciseServiceController {
 
   findByCategory(
     request: ExerciseCategory
-  ): Promise<ExerciseList> | Observable<ExerciseList> | ExerciseList;
+  ): Promise<Exercises> | Observable<Exercises> | Exercises;
+
+  findAll(
+    request: Empty
+  ): Promise<Exercises> | Observable<Exercises> | Exercises;
+
+  put(request: Exercise): Promise<Exercise> | Observable<Exercise> | Exercise;
+
+  deleteById(
+    request: ExerciseId
+  ): Promise<Exercise> | Observable<Exercise> | Exercise;
 }
 
 export function ExerciseServiceControllerMethods() {
@@ -85,7 +82,7 @@ export function ExerciseServiceControllerMethods() {
       'create',
       'findById',
       'findByName',
-      'findyByCategory',
+      'findByCategory',
       'findAll',
       'put',
       'deleteById',
