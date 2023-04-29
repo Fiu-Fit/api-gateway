@@ -16,10 +16,10 @@ import { AllGlobalExceptionsFilter } from '../../shared/rpc-exceptions-filter';
 import {
   WORKOUT_SERVICE_NAME,
   Workout,
-  WorkoutDto,
-  WorkoutList,
   WorkoutServiceClient,
+  Workouts,
 } from './interfaces/workout.pb';
+import { WorkoutDto } from './workout.dto';
 
 @UseFilters(AllGlobalExceptionsFilter)
 @Controller('workouts')
@@ -34,12 +34,12 @@ export class WorkoutController implements OnModuleInit {
       this.client.getService<WorkoutServiceClient>(WORKOUT_SERVICE_NAME);
   }
 
-  @Get('/')
-  findAll(): Observable<WorkoutList> {
+  @Get()
+  findAll(): Observable<Workouts> {
     return this.workoutService.findAll({});
   }
 
-  @Post('create')
+  @Post()
   create(
     @Body() workout: WorkoutDto
   ): Promise<Workout> | Observable<Workout> | Workout {
@@ -70,22 +70,25 @@ export class WorkoutController implements OnModuleInit {
   @Get('category/:category')
   findByCategory(
     @Param('category') category: string
-  ): Promise<WorkoutList> | Observable<WorkoutList> | WorkoutList {
+  ): Promise<Workouts> | Observable<Workouts> | Workouts {
     return this.workoutService.findByCategory({ category });
   }
 
   @Get('exerciseId/:exerciseId')
   findByExerciseId(
     @Param('exerciseId') exerciseId: string
-  ): Promise<WorkoutList> | Observable<WorkoutList> | WorkoutList {
+  ): Promise<Workouts> | Observable<Workouts> | Workouts {
     return this.workoutService.findByExerciseId({ exerciseId });
   }
 
   @Put(':id')
   put(
     @Param('id') id: string,
-    @Body() workout: Workout
+    @Body() workout: WorkoutDto
   ): Promise<Workout> | Observable<Workout> | Workout {
-    return this.workoutService.put({ id, workout });
+    return this.workoutService.put({
+      id,
+      ...workout,
+    });
   }
 }

@@ -34,14 +34,14 @@ export class ExerciseController implements OnModuleInit {
     );
   }
 
-  @Post('create')
+  @Post()
   create(
     @Body() exercise: Exercise
   ): Promise<Exercise> | Observable<Exercise> | Exercise {
     return this.exerciseService.create(exercise);
   }
 
-  @Get('/')
+  @Get()
   findAll(): Observable<ExerciseList> {
     return this.exerciseService.findAll({});
   }
