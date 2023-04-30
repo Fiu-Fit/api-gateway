@@ -1,16 +1,7 @@
-import {
-  Body,
-  Controller,
-  Inject,
-  OnModuleInit,
-  Post,
-  UseFilters,
-} from '@nestjs/common';
-import { ClientGrpc } from '@nestjs/microservices';
+import { Body, Controller, Post, UseFilters } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { AllGlobalExceptionsFilter } from '../../shared/rpc-exceptions-filter';
 import {
-  AUTH_SERVICE_NAME,
   AuthServiceClient,
   LoginRequest,
   RegisterRequest,
@@ -19,16 +10,8 @@ import {
 
 @UseFilters(AllGlobalExceptionsFilter)
 @Controller('auth')
-export class AuthController implements OnModuleInit {
-  @Inject(AUTH_SERVICE_NAME)
-  private readonly client: ClientGrpc;
-
+export class AuthController {
   private authService: AuthServiceClient;
-
-  public onModuleInit(): void {
-    this.authService =
-      this.client.getService<AuthServiceClient>(AUTH_SERVICE_NAME);
-  }
 
   @Post('login')
   login(

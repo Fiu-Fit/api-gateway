@@ -4,38 +4,23 @@ import {
   Controller,
   Delete,
   Get,
-  Inject,
-  OnModuleInit,
   Param,
   ParseIntPipe,
   Put,
   UseFilters,
   UseGuards,
 } from '@nestjs/common';
-import { ClientGrpc } from '@nestjs/microservices';
 import { Observable } from 'rxjs';
 import { AllGlobalExceptionsFilter } from '../../shared/rpc-exceptions-filter';
 import { AuthGuard } from '../auth/auth.guard';
-import {
-  USER_SERVICE_NAME,
-  User,
-  UserServiceClient,
-} from './interfaces/user.pb';
+import { User, UserServiceClient } from './interfaces/user.pb';
 import { UserDto } from './user.dto';
 
 @UseFilters(AllGlobalExceptionsFilter)
 @UseGuards(AuthGuard)
 @Controller('users')
-export class UserController implements OnModuleInit {
-  @Inject(USER_SERVICE_NAME)
-  private readonly client: ClientGrpc;
-
+export class UserController {
   private userService: UserServiceClient;
-
-  public onModuleInit(): void {
-    this.userService =
-      this.client.getService<UserServiceClient>(USER_SERVICE_NAME);
-  }
 
   @Get()
   findAll(): Observable<Page<User>> {
