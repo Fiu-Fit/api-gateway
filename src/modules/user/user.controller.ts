@@ -1,46 +1,51 @@
 import { Page } from '@fiu-fit/common';
+import { HttpService } from '@nestjs/axios';
 import {
   Body,
   Controller,
   Delete,
   Get,
+  Injectable,
   Param,
   ParseIntPipe,
   Put,
-  UseFilters,
   UseGuards,
 } from '@nestjs/common';
-import { Observable } from 'rxjs';
-import { AllGlobalExceptionsFilter } from '../../shared/rpc-exceptions-filter';
+import { Observable, map } from 'rxjs';
 import { AuthGuard } from '../auth/auth.guard';
-import { User, UserServiceClient } from './interfaces/user.pb';
+import { User } from './interfaces/user.pb';
 import { UserDto } from './user.dto';
 
-@UseFilters(AllGlobalExceptionsFilter)
+@Injectable()
 @UseGuards(AuthGuard)
 @Controller('users')
 export class UserController {
-  private userService: UserServiceClient;
+  constructor(private httpService: HttpService) {}
 
   @Get()
   findAll(): Observable<Page<User>> {
     // eslint-disable-next-line no-console
-    console.log('Hola');
-    return this.userService.findAll({});
-  }
-
-  @Delete(':id')
-  deleteById(
-    @Param('id', ParseIntPipe) id: number
-  ): Promise<User> | Observable<User> | User {
-    return this.userService.deleteById({ id });
+    return this.httpService
+      .get(`${process.env.USER_SERVICE_URL}/users`)
+      .pipe(map(res => res.data));
   }
 
   @Get(':id')
   findById(
     @Param('id', ParseIntPipe) id: number
   ): Promise<User> | Observable<User> | User {
-    return this.userService.findById({ id });
+    return this.httpService
+      .get(`${process.env.USER_SERVICE_URL}/users/${id}`)
+      .pipe(map(res => res.data));
+  }
+
+  @Delete(':id')
+  deleteById(
+    @Param('id', ParseIntPipe) id: number
+  ): Promise<User> | Observable<User> | User {
+    return this.httpService
+      .delete(`${process.env.USER_SERVICE_URL}/users/${id}`)
+      .pipe(map(res => res.data));
   }
 
   @Put(':id')
@@ -48,9 +53,8 @@ export class UserController {
     @Param('id', ParseIntPipe) id: number,
     @Body() user: UserDto
   ): Promise<User> | Observable<User> | User {
-    return this.userService.put({
-      id,
-      ...user,
-    });
+    return this.httpService
+      .put(`${process.env.USER_SERVICE_URL}/users/${id}`, user)
+      .pipe(map(res => res.data));
   }
 }

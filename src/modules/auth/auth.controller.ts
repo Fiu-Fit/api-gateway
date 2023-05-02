@@ -2,13 +2,8 @@
 import { HttpService } from '@nestjs/axios';
 import { Body, Controller, Injectable, Post } from '@nestjs/common';
 import { Observable, map } from 'rxjs';
-import {
-  LoginRequest,
-  RegisterRequest,
-  Token,
-} from './interfaces/auth.pb';
+import { LoginRequest, RegisterRequest, Token } from './interfaces/auth.pb';
 
-// @UseFilters(AllGlobalExceptionsFilter)
 @Injectable()
 @Controller('auth')
 export class AuthController {
