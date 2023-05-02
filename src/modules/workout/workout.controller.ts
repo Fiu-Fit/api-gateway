@@ -1,94 +1,73 @@
+import { HttpService } from '@nestjs/axios';
 import {
   Body,
   Controller,
   Delete,
   Get,
-  Inject,
-  OnModuleInit,
+  Injectable,
   Param,
+  ParseIntPipe,
   Post,
   Put,
-  UseFilters,
 } from '@nestjs/common';
-import { ClientGrpc } from '@nestjs/microservices';
-import { Observable } from 'rxjs';
-import { AllGlobalExceptionsFilter } from '../../shared/rpc-exceptions-filter';
-import {
-  WORKOUT_SERVICE_NAME,
-  Workout,
-  WorkoutServiceClient,
-  Workouts,
-} from './interfaces/workout.pb';
+import { Observable, map } from 'rxjs';
+import { Workout, Workouts } from './interfaces/workout.pb';
 import { WorkoutDto } from './workout.dto';
 
-@UseFilters(AllGlobalExceptionsFilter)
+@Injectable()
 @Controller('workouts')
-export class WorkoutController implements OnModuleInit {
-  @Inject(WORKOUT_SERVICE_NAME)
-  private readonly client: ClientGrpc;
-
-  private workoutService: WorkoutServiceClient;
-
-  public onModuleInit(): void {
-    this.workoutService =
-      this.client.getService<WorkoutServiceClient>(WORKOUT_SERVICE_NAME);
-  }
+export class WorkoutController {
+  constructor(private httpService: HttpService) {}
 
   @Get()
   findAll(): Observable<Workouts> {
-    return this.workoutService.findAll({});
+    return this.httpService
+      .get(`${process.env.WORKOUT_SERVICE_URL}/workouts`)
+      .pipe(map(res => res.data));
   }
 
   @Post()
-  create(
-    @Body() workout: WorkoutDto
-  ): Promise<Workout> | Observable<Workout> | Workout {
-    return this.workoutService.create(workout);
+  create(@Body() workout: WorkoutDto): Observable<Workout> {
+    return this.httpService
+      .post(`${process.env.WORKOUT_SERVICE_URL}/workouts/create`, workout)
+      .pipe(map(res => res.data));
   }
 
   @Get(':id')
-  findById(
-    @Param('id') id: string
-  ): Promise<Workout> | Observable<Workout> | Workout {
-    return this.workoutService.findById({ id });
+  findById(@Param('id', ParseIntPipe) id: number): Observable<Workout> {
+    return this.httpService
+      .get(`${process.env.WORKOUT_SERVICE_URL}/workouts/${id}`)
+      .pipe(map(res => res.data));
   }
 
   @Delete(':id')
-  deleteById(
-    @Param('id') id: string
-  ): Promise<Workout> | Observable<Workout> | Workout {
-    return this.workoutService.deleteById({ id });
+  deleteById(@Param('id', ParseIntPipe) id: number): Observable<Workout> {
+    return this.httpService
+      .delete(`${process.env.WORKOUT_SERVICE_URL}/workouts/${id}`)
+      .pipe(map(res => res.data));
   }
 
   @Get('name/:name')
-  findByName(
-    @Param('name') name: string
-  ): Promise<Workout> | Observable<Workout> | Workout {
-    return this.workoutService.findByName({ name });
+  findByName(@Param('name') name: string): Observable<Workout> {
+    return this.httpService
+      .get(`${process.env.WORKOUT_SERVICE_URL}/workouts/name/${name}`)
+      .pipe(map(res => res.data));
   }
 
   @Get('category/:category')
-  findByCategory(
-    @Param('category') category: string
-  ): Promise<Workouts> | Observable<Workouts> | Workouts {
-    return this.workoutService.findByCategory({ category });
-  }
-
-  @Get('exerciseId/:exerciseId')
-  findByExerciseId(
-    @Param('exerciseId') exerciseId: string
-  ): Promise<Workouts> | Observable<Workouts> | Workouts {
-    return this.workoutService.findByExerciseId({ exerciseId });
+  findByCategory(@Param('category') category: string): Observable<Workout> {
+    return this.httpService
+      .get(`${process.env.WORKOUT_SERVICE_URL}/workouts/category/${category}`)
+      .pipe(map(res => res.data));
   }
 
   @Put(':id')
   put(
-    @Param('id') id: string,
-    @Body() workout: WorkoutDto
-  ): Promise<Workout> | Observable<Workout> | Workout {
-    return this.workoutService.put({
-      id,
-      ...workout,
-    });
+    @Param('id', ParseIntPipe) id: number,
+    @Body() exercise: WorkoutDto
+  ): Observable<Workout> {
+    return this.httpService
+      .put(`${process.env.WORKOUT_SERVICE_URL}/workouts/${id}`, exercise)
+      .pipe(map(res => res.data));
   }
 }

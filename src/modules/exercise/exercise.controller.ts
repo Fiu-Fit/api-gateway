@@ -1,88 +1,73 @@
+import { HttpService } from '@nestjs/axios';
 import {
   Body,
   Controller,
   Delete,
   Get,
-  Inject,
-  OnModuleInit,
+  Injectable,
   Param,
+  ParseIntPipe,
   Post,
   Put,
-  UseFilters,
 } from '@nestjs/common';
-import { ClientGrpc } from '@nestjs/microservices';
-import { Observable } from 'rxjs';
-import { AllGlobalExceptionsFilter } from '../../shared/rpc-exceptions-filter';
+import { Observable, map } from 'rxjs';
 import { ExerciseDto } from './exercise.dto';
-import {
-  EXERCISE_SERVICE_NAME,
-  Exercise,
-  ExerciseServiceClient,
-  Exercises,
-} from './interfaces/exercise.pb';
+import { Exercise, Exercises } from './interfaces/exercise.pb';
 
-@UseFilters(AllGlobalExceptionsFilter)
+@Injectable()
 @Controller('exercises')
-export class ExerciseController implements OnModuleInit {
-  @Inject(EXERCISE_SERVICE_NAME)
-  private readonly client: ClientGrpc;
-
-  private exerciseService: ExerciseServiceClient;
-
-  public onModuleInit(): void {
-    this.exerciseService = this.client.getService<ExerciseServiceClient>(
-      EXERCISE_SERVICE_NAME
-    );
-  }
+export class ExerciseController {
+  constructor(private httpService: HttpService) {}
 
   @Post()
-  create(
-    @Body() exercise: ExerciseDto
-  ): Promise<Exercise> | Observable<Exercise> | Exercise {
-    return this.exerciseService.create(exercise);
+  create(@Body() exercise: ExerciseDto): Observable<Exercise> {
+    return this.httpService
+      .post(`${process.env.WORKOUT_SERVICE_URL}/exercises/create`, exercise)
+      .pipe(map(res => res.data));
   }
 
   @Get()
   findAll(): Observable<Exercises> {
-    return this.exerciseService.findAll({});
+    return this.httpService
+      .get(`${process.env.WORKOUT_SERVICE_URL}/exercises`)
+      .pipe(map(res => res.data));
   }
 
   @Get(':id')
-  findById(
-    @Param('id') id: string
-  ): Promise<Exercise> | Observable<Exercise> | Exercise {
-    return this.exerciseService.findById({ id });
+  findById(@Param('id', ParseIntPipe) id: number): Observable<Exercise> {
+    return this.httpService
+      .get(`${process.env.WORKOUT_SERVICE_URL}/exercises/${id}`)
+      .pipe(map(res => res.data));
   }
 
   @Put(':id')
   put(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body() exercise: ExerciseDto
-  ): Promise<Exercise> | Observable<Exercise> | Exercise {
-    return this.exerciseService.put({
-      id,
-      ...exercise,
-    });
+  ): Observable<Exercise> {
+    return this.httpService
+      .put(`${process.env.WORKOUT_SERVICE_URL}/exercises/${id}`, exercise)
+      .pipe(map(res => res.data));
   }
 
   @Delete(':id')
-  deleteById(
-    @Param('id') id: string
-  ): Promise<Exercise> | Observable<Exercise> | Exercise {
-    return this.exerciseService.deleteById({ id });
+  deleteById(@Param('id', ParseIntPipe) id: number): Observable<Exercise> {
+    return this.httpService
+      .delete(`${process.env.WORKOUT_SERVICE_URL}/exercises/${id}`)
+      .pipe(map(res => res.data));
   }
 
   @Get('name/:name')
-  findByName(
-    @Param('name') name: string
-  ): Promise<Exercise> | Observable<Exercise> | Exercise {
-    return this.exerciseService.findByName({ name });
+  findByName(@Param('name') name: string): Observable<Exercise> {
+    return this.httpService
+      .get(`${process.env.WORKOUT_SERVICE_URL}/exercises/name/${name}`)
+      .pipe(map(res => res.data));
   }
 
   @Get('category/:category')
-  findByCategory(
-    @Param('category') category: string
-  ): Promise<Exercises> | Observable<Exercises> | Exercises {
-    return this.exerciseService.findByCategory({ category });
+  findByCategory(@Param('category') category: string): Observable<Exercise> {
+    return this.httpService
+      .get(`${process.env.WORKOUT_SERVICE_URL}/exercises/category/${category}`)
+      .pipe(map(res => res.data));
   }
 }

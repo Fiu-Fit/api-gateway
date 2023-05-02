@@ -1,9 +1,6 @@
 /* eslint-disable */
-import { GrpcMethod, GrpcStreamMethod } from '@nestjs/microservices';
 import { Observable } from 'rxjs';
 import { ExerciseDto } from '../exercise.dto';
-
-export const protobufPackage = 'exercise';
 
 export interface ExerciseId {
   id: string;
@@ -29,8 +26,6 @@ export interface ExerciseName {
 export interface ExerciseCategory {
   category: string;
 }
-
-export const EXERCISE_PACKAGE_NAME = 'exercise';
 
 export interface ExerciseServiceClient {
   create(request: ExerciseDto): Observable<Exercise>;
@@ -75,42 +70,3 @@ export interface ExerciseServiceController {
     request: ExerciseId
   ): Promise<Exercise> | Observable<Exercise> | Exercise;
 }
-
-export function ExerciseServiceControllerMethods() {
-  return function (constructor: Function) {
-    const grpcMethods: string[] = [
-      'create',
-      'findById',
-      'findByName',
-      'findByCategory',
-      'findAll',
-      'put',
-      'deleteById',
-    ];
-    for (const method of grpcMethods) {
-      const descriptor: any = Reflect.getOwnPropertyDescriptor(
-        constructor.prototype,
-        method
-      );
-      GrpcMethod('ExerciseService', method)(
-        constructor.prototype[method],
-        method,
-        descriptor
-      );
-    }
-    const grpcStreamMethods: string[] = [];
-    for (const method of grpcStreamMethods) {
-      const descriptor: any = Reflect.getOwnPropertyDescriptor(
-        constructor.prototype,
-        method
-      );
-      GrpcStreamMethod('ExerciseService', method)(
-        constructor.prototype[method],
-        method,
-        descriptor
-      );
-    }
-  };
-}
-
-export const EXERCISE_SERVICE_NAME = 'ExerciseService';

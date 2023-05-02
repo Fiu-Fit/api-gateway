@@ -1,26 +1,10 @@
-import { DEFAULT_PROTO_PATH } from '@fiu-fit/common';
+import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
-import { ClientsModule, Transport } from '@nestjs/microservices';
+import { ConfigModule } from '@nestjs/config';
 import { ExerciseController } from './exercise.controller';
-import {
-  EXERCISE_SERVICE_NAME,
-  protobufPackage,
-} from './interfaces/exercise.pb';
 
 @Module({
-  imports: [
-    ClientsModule.register([
-      {
-        name:      EXERCISE_SERVICE_NAME,
-        transport: Transport.GRPC,
-        options:   {
-          url:       process.env.EXERCISE_SERVICE_URL,
-          package:   protobufPackage,
-          protoPath: `${DEFAULT_PROTO_PATH}/exercise.proto`,
-        },
-      },
-    ]),
-  ],
+  imports:     [HttpModule.register({}), ConfigModule.forRoot()],
   controllers: [ExerciseController],
 })
 export class ExerciseModule {}
