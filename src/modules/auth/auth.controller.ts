@@ -1,34 +1,37 @@
-import { Body, Controller, Post, UseFilters } from '@nestjs/common';
-import { Observable } from 'rxjs';
-import { AllGlobalExceptionsFilter } from '../../shared/rpc-exceptions-filter';
+/* eslint-disable no-console */
+import { HttpService } from '@nestjs/axios';
+import { Body, Controller, Injectable, Post } from '@nestjs/common';
+import { Observable, map } from 'rxjs';
 import {
-  AuthServiceClient,
   LoginRequest,
   RegisterRequest,
   Token,
 } from './interfaces/auth.pb';
 
-@UseFilters(AllGlobalExceptionsFilter)
+// @UseFilters(AllGlobalExceptionsFilter)
+@Injectable()
 @Controller('auth')
 export class AuthController {
-  private authService: AuthServiceClient;
+  constructor(private httpService: HttpService) {}
 
   @Post('login')
-  login(
-    @Body() loginRequest: LoginRequest
-  ): Promise<Token> | Observable<Token> | Token {
-    return this.authService.login(loginRequest);
+  login(@Body() loginRequest: LoginRequest): Observable<Token> {
+    return this.httpService
+      .post(`${process.env.USER_SERVICE_URL}/auth/login`, loginRequest)
+      .pipe(map(res => res.data));
   }
 
   @Post('register')
-  register(
-    @Body() newUser: RegisterRequest
-  ): Promise<Token> | Observable<Token> | Token {
-    return this.authService.register(newUser);
+  register(@Body() newUser: RegisterRequest): Observable<Token> {
+    return this.httpService
+      .post(`${process.env.USER_SERVICE_URL}/auth/register`, newUser)
+      .pipe(map(res => res.data));
   }
 
   @Post('logout')
-  logout() {
-    return this.authService.logout({});
+  logout(): Observable<Token> {
+    return this.httpService
+      .post(`${process.env.USER_SERVICE_URL}/auth/logout`)
+      .pipe(map(res => res.data));
   }
 }

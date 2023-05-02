@@ -24,6 +24,8 @@ export class UserController {
 
   @Get()
   findAll(): Observable<Page<User>> {
+    // eslint-disable-next-line no-console
+    console.log('Hola');
     return this.userService.findAll({});
   }
 
