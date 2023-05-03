@@ -1,3 +1,5 @@
+import { Observable } from 'rxjs';
+
 export enum Role {
   Admin = 0,
   Athlete = 1,
@@ -28,4 +30,14 @@ export interface RegisterRequest {
 export interface LoginRequest {
   email: string;
   password: string;
+}
+
+export interface AuthServiceClient {
+  register(request: RegisterRequest): Observable<Token>;
+
+  login(request: LoginRequest): Observable<Token>;
+
+  validate(request: Token): Observable<ValidResponse>;
+
+  logout(request: Empty): Observable<Empty>;
 }
