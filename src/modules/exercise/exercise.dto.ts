@@ -1,4 +1,5 @@
 import { IsNotEmpty, IsString, MaxLength } from 'class-validator';
+import { Category } from '../workout/interfaces/workout.pb';
 
 export class ExerciseDto {
   @IsString()
@@ -12,5 +13,5 @@ export class ExerciseDto {
 
   @IsString()
   @IsNotEmpty()
-  category: string;
+  category: Category;
 }

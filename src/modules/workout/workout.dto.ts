@@ -7,7 +7,7 @@ import {
   MaxLength,
   Min,
 } from 'class-validator';
-import { WorkoutExercise } from './interfaces/workout.pb';
+import { Category, WorkoutExercise } from './interfaces/workout.pb';
 
 export class WorkoutDto {
   @IsString()
@@ -29,9 +29,8 @@ export class WorkoutDto {
   @IsNotEmpty()
   difficulty: number;
 
-  @IsString()
   @IsNotEmpty()
-  category: string;
+  category: Category;
 
   @IsOptional()
   exercises: WorkoutExercise[] = [];
@@ -42,4 +41,10 @@ export class WorkoutDto {
   @IsNumber()
   @IsNotEmpty()
   authorId: number;
+
+  @IsOptional()
+  updatedAt: Date;
+
+  @IsOptional()
+  completedAt?: Date;
 }
