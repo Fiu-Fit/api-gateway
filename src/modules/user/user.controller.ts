@@ -5,13 +5,16 @@ import {
   Controller,
   Delete,
   Get,
+  HttpException,
+  HttpStatus,
   Injectable,
   Param,
   ParseIntPipe,
   Put,
   UseGuards,
 } from '@nestjs/common';
-import { Observable, map } from 'rxjs';
+import { AxiosError } from 'axios';
+import { catchError, firstValueFrom } from 'rxjs';
 import { AuthGuard } from '../auth/auth.guard';
 import { User } from './interfaces/user.pb';
 import { UserDto } from './user.dto';
@@ -23,38 +26,89 @@ export class UserController {
   constructor(private httpService: HttpService) {}
 
   @Get()
-  findAll(): Observable<Page<User>> {
-    // eslint-disable-next-line no-console
-    return this.httpService
-      .get(`${process.env.USER_SERVICE_URL}/users`)
-      .pipe(map(res => res.data));
+  async findAll(): Promise<Page<User>> {
+    const { data } = await firstValueFrom(
+      this.httpService.get<Page<User>>('/users').pipe(
+        catchError((err: AxiosError) => {
+          if (err.response) {
+            throw new HttpException(
+              err.response.data as string,
+              err.response.status
+            );
+          }
+          throw new HttpException(
+            err.message,
+            HttpStatus.INTERNAL_SERVER_ERROR
+          );
+        })
+      )
+    );
+    return data;
   }
 
   @Get(':id')
-  findById(
-    @Param('id', ParseIntPipe) id: number
-  ): Promise<User> | Observable<User> | User {
-    return this.httpService
-      .get(`${process.env.USER_SERVICE_URL}/users/${id}`)
-      .pipe(map(res => res.data));
+  async findById(@Param('id', ParseIntPipe) id: number): Promise<User> {
+    const { data } = await firstValueFrom(
+      this.httpService.get<User>(`/users/${id}`).pipe(
+        catchError((err: AxiosError) => {
+          if (err.response) {
+            throw new HttpException(
+              err.response.data as string,
+              err.response.status
+            );
+          }
+          throw new HttpException(
+            err.message,
+            HttpStatus.INTERNAL_SERVER_ERROR
+          );
+        })
+      )
+    );
+    return data;
   }
 
   @Delete(':id')
-  deleteById(
-    @Param('id', ParseIntPipe) id: number
-  ): Promise<User> | Observable<User> | User {
-    return this.httpService
-      .delete(`${process.env.USER_SERVICE_URL}/users/${id}`)
-      .pipe(map(res => res.data));
+  async deleteById(@Param('id', ParseIntPipe) id: number): Promise<User> {
+    const { data } = await firstValueFrom(
+      this.httpService.delete<User>(`/users/${id}`).pipe(
+        catchError((err: AxiosError) => {
+          if (err.response) {
+            throw new HttpException(
+              err.response.data as string,
+              err.response.status
+            );
+          }
+          throw new HttpException(
+            err.message,
+            HttpStatus.INTERNAL_SERVER_ERROR
+          );
+        })
+      )
+    );
+    return data;
   }
 
   @Put(':id')
-  put(
+  async put(
     @Param('id', ParseIntPipe) id: number,
     @Body() user: UserDto
-  ): Promise<User> | Observable<User> | User {
-    return this.httpService
-      .put(`${process.env.USER_SERVICE_URL}/users/${id}`, user)
-      .pipe(map(res => res.data));
+  ): Promise<User> {
+    const { data } = await firstValueFrom(
+      this.httpService.put<User>(`/users/${id}`, user).pipe(
+        catchError((err: AxiosError) => {
+          if (err.response) {
+            throw new HttpException(
+              err.response.data as string,
+              err.response.status
+            );
+          }
+          throw new HttpException(
+            err.message,
+            HttpStatus.INTERNAL_SERVER_ERROR
+          );
+        })
+      )
+    );
+    return data;
   }
 }

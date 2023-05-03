@@ -1,8 +1,20 @@
-/* eslint-disable no-console */
 import { HttpService } from '@nestjs/axios';
-import { Body, Controller, Injectable, Post } from '@nestjs/common';
-import { Observable, map } from 'rxjs';
-import { LoginRequest, RegisterRequest, Token } from './interfaces/auth.pb';
+import {
+  Body,
+  Controller,
+  HttpException,
+  HttpStatus,
+  Injectable,
+  Post,
+} from '@nestjs/common';
+import { AxiosError } from 'axios';
+import { catchError, firstValueFrom } from 'rxjs';
+import {
+  LoginRequest,
+  RegisterRequest,
+  Token,
+  ValidResponse,
+} from './interfaces/auth.pb';
 
 @Injectable()
 @Controller('auth')
@@ -10,29 +22,86 @@ export class AuthController {
   constructor(private httpService: HttpService) {}
 
   @Post('login')
-  login(@Body() loginRequest: LoginRequest): Observable<Token> {
-    return this.httpService
-      .post(`${process.env.USER_SERVICE_URL}/auth/login`, loginRequest)
-      .pipe(map(res => res.data));
+  async login(@Body() loginRequest: LoginRequest): Promise<Token> {
+    const { data } = await firstValueFrom(
+      this.httpService.post<Token>('/auth/login', loginRequest).pipe(
+        catchError((err: AxiosError) => {
+          if (err.response) {
+            throw new HttpException(
+              err.response.data as string,
+              err.response.status
+            );
+          }
+          throw new HttpException(
+            err.message,
+            HttpStatus.INTERNAL_SERVER_ERROR
+          );
+        })
+      )
+    );
+    return data;
   }
 
   @Post('register')
-  register(@Body() newUser: RegisterRequest): Observable<Token> {
-    return this.httpService
-      .post(`${process.env.USER_SERVICE_URL}/auth/register`, newUser)
-      .pipe(map(res => res.data));
+  async register(@Body() newUser: RegisterRequest): Promise<Token> {
+    const { data } = await firstValueFrom(
+      this.httpService.post<Token>('auth/register', newUser).pipe(
+        catchError((err: AxiosError) => {
+          if (err.response) {
+            throw new HttpException(
+              err.response.data as string,
+              err.response.status
+            );
+          }
+          throw new HttpException(
+            err.message,
+            HttpStatus.INTERNAL_SERVER_ERROR
+          );
+        })
+      )
+    );
+    return data;
   }
 
   @Post('logout')
-  logout(): Observable<Token> {
-    return this.httpService
-      .post(`${process.env.USER_SERVICE_URL}/auth/logout`)
-      .pipe(map(res => res.data));
+  async logout(): Promise<Token> {
+    const { data } = await firstValueFrom(
+      this.httpService.post<Token>('auth/logout').pipe(
+        catchError((err: AxiosError) => {
+          if (err.response) {
+            throw new HttpException(
+              err.response.data as string,
+              err.response.status
+            );
+          }
+          throw new HttpException(
+            err.message,
+            HttpStatus.INTERNAL_SERVER_ERROR
+          );
+        })
+      )
+    );
+    return data;
   }
 
-  /*
   @Post('validate')
-  validate(@Body() token: Token): Observable<ValidResponse> {
-    return this.authService.validate(token);
-  }*/
+  async validate(@Body() token: Token): Promise<ValidResponse> {
+    const { data } = await firstValueFrom(
+      this.httpService.post<ValidResponse>('/auth/validate', token).pipe(
+        catchError((err: AxiosError) => {
+          if (err.response) {
+            throw new HttpException(
+              err.response.data as string,
+              err.response.status
+            );
+          }
+          throw new HttpException(
+            err.message,
+            HttpStatus.INTERNAL_SERVER_ERROR
+          );
+        })
+      )
+    );
+    return data;
+  }
 }

@@ -5,7 +5,13 @@ import { AuthModule } from '../auth/auth.module';
 import { UserController } from './user.controller';
 
 @Module({
-  imports:     [AuthModule, HttpModule.register({}), ConfigModule.forRoot()],
+  imports: [
+    AuthModule,
+    HttpModule.register({
+      baseURL: process.env.USER_SERVICE_URL,
+    }),
+    ConfigModule.forRoot(),
+  ],
   exports:     [],
   controllers: [UserController],
 })
