@@ -6,7 +6,6 @@ import {
   Get,
   Injectable,
   Param,
-  ParseIntPipe,
   Post,
   Put,
 } from '@nestjs/common';
@@ -19,7 +18,7 @@ import { Exercise, Exercises } from './interfaces/exercise.pb';
 export class ExerciseController {
   constructor(private httpService: HttpService) {}
 
-  @Post()
+  @Post('create')
   create(@Body() exercise: ExerciseDto): Observable<Exercise> {
     return this.httpService
       .post(`${process.env.WORKOUT_SERVICE_URL}/exercises/create`, exercise)
@@ -34,7 +33,7 @@ export class ExerciseController {
   }
 
   @Get(':id')
-  findById(@Param('id', ParseIntPipe) id: number): Observable<Exercise> {
+  findById(@Param('id') id: string): Observable<Exercise> {
     return this.httpService
       .get(`${process.env.WORKOUT_SERVICE_URL}/exercises/${id}`)
       .pipe(map(res => res.data));
@@ -42,7 +41,7 @@ export class ExerciseController {
 
   @Put(':id')
   put(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id') id: string,
     @Body() exercise: ExerciseDto
   ): Observable<Exercise> {
     return this.httpService
@@ -51,7 +50,7 @@ export class ExerciseController {
   }
 
   @Delete(':id')
-  deleteById(@Param('id', ParseIntPipe) id: number): Observable<Exercise> {
+  deleteById(@Param('id') id: string): Observable<Exercise> {
     return this.httpService
       .delete(`${process.env.WORKOUT_SERVICE_URL}/exercises/${id}`)
       .pipe(map(res => res.data));

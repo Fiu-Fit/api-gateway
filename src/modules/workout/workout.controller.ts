@@ -6,7 +6,6 @@ import {
   Get,
   Injectable,
   Param,
-  ParseIntPipe,
   Post,
   Put,
 } from '@nestjs/common';
@@ -26,7 +25,7 @@ export class WorkoutController {
       .pipe(map(res => res.data));
   }
 
-  @Post()
+  @Post('create')
   create(@Body() workout: WorkoutDto): Observable<Workout> {
     return this.httpService
       .post(`${process.env.WORKOUT_SERVICE_URL}/workouts/create`, workout)
@@ -34,14 +33,14 @@ export class WorkoutController {
   }
 
   @Get(':id')
-  findById(@Param('id', ParseIntPipe) id: number): Observable<Workout> {
+  findById(@Param('id') id: string): Observable<Workout> {
     return this.httpService
       .get(`${process.env.WORKOUT_SERVICE_URL}/workouts/${id}`)
       .pipe(map(res => res.data));
   }
 
   @Delete(':id')
-  deleteById(@Param('id', ParseIntPipe) id: number): Observable<Workout> {
+  deleteById(@Param('id') id: string): Observable<Workout> {
     return this.httpService
       .delete(`${process.env.WORKOUT_SERVICE_URL}/workouts/${id}`)
       .pipe(map(res => res.data));
@@ -63,7 +62,7 @@ export class WorkoutController {
 
   @Put(':id')
   put(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id') id: string,
     @Body() exercise: WorkoutDto
   ): Observable<Workout> {
     return this.httpService
