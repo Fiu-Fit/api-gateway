@@ -29,4 +29,10 @@ export class AuthController {
       .post(`${process.env.USER_SERVICE_URL}/auth/logout`)
       .pipe(map(res => res.data));
   }
+
+  /*
+  @Post('validate')
+  validate(@Body() token: Token): Observable<ValidResponse> {
+    return this.authService.validate(token);
+  }*/
 }
