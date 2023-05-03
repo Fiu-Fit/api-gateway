@@ -12,7 +12,3 @@ export interface Exercise {
 }
 
 export interface Empty {}
-
-export interface Exercises {
-  exercises: Exercise[];
-}

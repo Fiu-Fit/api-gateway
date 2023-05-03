@@ -10,7 +10,7 @@ import {
   Put,
 } from '@nestjs/common';
 import { Observable, map } from 'rxjs';
-import { Workout, Workouts } from './interfaces/workout.pb';
+import { Workout } from './interfaces/workout.pb';
 import { WorkoutDto } from './workout.dto';
 
 @Injectable()
@@ -19,7 +19,7 @@ export class WorkoutController {
   constructor(private httpService: HttpService) {}
 
   @Get()
-  findAll(): Observable<Workouts> {
+  findAll(): Observable<Workout[]> {
     return this.httpService
       .get(`${process.env.WORKOUT_SERVICE_URL}/workouts`)
       .pipe(map(res => res.data));
@@ -54,7 +54,7 @@ export class WorkoutController {
   }
 
   @Get('category/:category')
-  findByCategory(@Param('category') category: string): Observable<Workout> {
+  findByCategory(@Param('category') category: string): Observable<Workout[]> {
     return this.httpService
       .get(`${process.env.WORKOUT_SERVICE_URL}/workouts/category/${category}`)
       .pipe(map(res => res.data));

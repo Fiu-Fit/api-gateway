@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { Observable, map } from 'rxjs';
 import { ExerciseDto } from './exercise.dto';
-import { Exercise, Exercises } from './interfaces/exercise.pb';
+import { Exercise } from './interfaces/exercise.pb';
 
 @Injectable()
 @Controller('exercises')
@@ -26,7 +26,7 @@ export class ExerciseController {
   }
 
   @Get()
-  findAll(): Observable<Exercises> {
+  findAll(): Observable<Exercise[]> {
     return this.httpService
       .get(`${process.env.WORKOUT_SERVICE_URL}/exercises`)
       .pipe(map(res => res.data));
@@ -64,7 +64,7 @@ export class ExerciseController {
   }
 
   @Get('category/:category')
-  findByCategory(@Param('category') category: string): Observable<Exercise> {
+  findByCategory(@Param('category') category: string): Observable<Exercise[]> {
     return this.httpService
       .get(`${process.env.WORKOUT_SERVICE_URL}/exercises/category/${category}`)
       .pipe(map(res => res.data));
