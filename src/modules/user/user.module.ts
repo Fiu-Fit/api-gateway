@@ -1,18 +1,23 @@
 import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ServiceConfig, ServiceName } from '../../shared/service-config';
 import { AuthModule } from '../auth/auth.module';
 import { UserController } from './user.controller';
 
 @Module({
   imports: [
     AuthModule,
-    HttpModule.register({
-      baseURL: process.env.USER_SERVICE_URL,
-    }),
     ConfigModule.forRoot(),
+    HttpModule.registerAsync({
+      imports:    [ConfigModule],
+      useFactory: (configService: ConfigService) =>
+        ServiceConfig.createHttpModuleOptions(ServiceName.User, configService),
+      inject: [ConfigService],
+    }),
   ],
   exports:     [],
+  providers:   [],
   controllers: [UserController],
 })
 export class UserModule {}
