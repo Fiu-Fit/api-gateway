@@ -30,7 +30,7 @@ export class ServerController {
   ) {
     const { data } = await firstValueFrom(
       this.httpService
-        .get(this.entityName, {
+        .get(`/${this.entityName}`, {
           params: {
             q,
             filters,
