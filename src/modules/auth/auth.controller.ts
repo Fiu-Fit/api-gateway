@@ -17,6 +17,7 @@ export class AuthController {
   constructor(private httpService: HttpService) {}
 
   @Post('login')
+  @HttpCode(HttpStatus.OK)
   async login(@Body() loginRequest: LoginRequest): Promise<Token> {
     const { data } = await firstValueFrom(
       this.httpService
