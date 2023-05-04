@@ -5,12 +5,7 @@ import {
   Inject,
   Injectable,
 } from '@nestjs/common';
-import * as admin from 'firebase-admin';
-
-admin.initializeApp({
-  credential: admin.credential.applicationDefault(),
-});
-
+import admin from '../../firebase/firebase';
 import { AuthService } from './auth.service';
 
 const logger = LoggerFactory('AuthGuard');

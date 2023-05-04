@@ -1,12 +1,27 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from 'firebase/app';
 import * as admin from 'firebase-admin';
-// TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
+const firebaseParams = {
+  type:                    process.env.FIREBASE_TYPE as string,
+  projectId:               process.env.FIREBASE_PROJECT_ID as string,
+  privateKeyId:            process.env.FIREBASE_PRIVATE_KEY_ID as string,
+  privateKey:              process.env.FIREBASE_PRIVATE_KEY as string,
+  clientEmail:             process.env.FIREBASE_CLIENT_EMAIL as string,
+  clientId:                process.env.FIREBASE_CLIENT_ID as string,
+  authUri:                 process.env.FIREBASE_AUTH_URI as string,
+  tokenUri:                process.env.FIREBASE_TOKEN_URI as string,
+  authProviderX509CertUrl: process.env
+    .FIREBASE_AUTH_PROVIDER_X509_CERT_URL as string,
+  clientX509CertUrl: process.env.FIREBASE_CLIENT_X509_CERT_URL as string,
+};
+
 admin.initializeApp({
-  credential: admin.credential.applicationDefault(),
+  credential: admin.credential.cert(firebaseParams),
 });
+
+export default admin;
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
