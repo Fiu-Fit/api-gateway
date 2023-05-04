@@ -4,13 +4,16 @@ import {
   Controller,
   Delete,
   Get,
+  HttpException,
+  HttpStatus,
   Injectable,
   Param,
   Post,
   Put,
 } from '@nestjs/common';
-import { Observable, map } from 'rxjs';
-import { Workout, Workouts } from './interfaces/workout.pb';
+import { AxiosError } from 'axios';
+import { catchError, firstValueFrom } from 'rxjs';
+import { Workout } from './interfaces/workout.pb';
 import { WorkoutDto } from './workout.dto';
 
 @Injectable()
@@ -18,55 +21,153 @@ import { WorkoutDto } from './workout.dto';
 export class WorkoutController {
   constructor(private httpService: HttpService) {}
 
-  @Get()
-  findAll(): Observable<Workouts> {
-    return this.httpService
-      .get(`${process.env.WORKOUT_SERVICE_URL}/workouts`)
-      .pipe(map(res => res.data));
+  @Post()
+  async create(@Body() workout: WorkoutDto): Promise<Workout> {
+    const { data } = await firstValueFrom(
+      this.httpService.post<Workout>('/workouts', workout).pipe(
+        catchError((err: AxiosError) => {
+          if (err.response) {
+            throw new HttpException(
+              err.response.data as string,
+              err.response.status
+            );
+          }
+          throw new HttpException(
+            err.message,
+            HttpStatus.INTERNAL_SERVER_ERROR
+          );
+        })
+      )
+    );
+    return data;
   }
 
-  @Post('create')
-  create(@Body() workout: WorkoutDto): Observable<Workout> {
-    return this.httpService
-      .post(`${process.env.WORKOUT_SERVICE_URL}/workouts/create`, workout)
-      .pipe(map(res => res.data));
+  @Get()
+  async findAll(): Promise<Workout[]> {
+    const { data } = await firstValueFrom(
+      this.httpService.get<Workout[]>('/workouts').pipe(
+        catchError((err: AxiosError) => {
+          if (err.response) {
+            throw new HttpException(
+              err.response.data as string,
+              err.response.status
+            );
+          }
+          throw new HttpException(
+            err.message,
+            HttpStatus.INTERNAL_SERVER_ERROR
+          );
+        })
+      )
+    );
+    return data;
   }
 
   @Get(':id')
-  findById(@Param('id') id: string): Observable<Workout> {
-    return this.httpService
-      .get(`${process.env.WORKOUT_SERVICE_URL}/workouts/${id}`)
-      .pipe(map(res => res.data));
-  }
-
-  @Delete(':id')
-  deleteById(@Param('id') id: string): Observable<Workout> {
-    return this.httpService
-      .delete(`${process.env.WORKOUT_SERVICE_URL}/workouts/${id}`)
-      .pipe(map(res => res.data));
-  }
-
-  @Get('name/:name')
-  findByName(@Param('name') name: string): Observable<Workout> {
-    return this.httpService
-      .get(`${process.env.WORKOUT_SERVICE_URL}/workouts/name/${name}`)
-      .pipe(map(res => res.data));
-  }
-
-  @Get('category/:category')
-  findByCategory(@Param('category') category: string): Observable<Workout> {
-    return this.httpService
-      .get(`${process.env.WORKOUT_SERVICE_URL}/workouts/category/${category}`)
-      .pipe(map(res => res.data));
+  async findById(@Param('id') id: string): Promise<Workout> {
+    const { data } = await firstValueFrom(
+      this.httpService.get<Workout>(`/workouts/${id}`).pipe(
+        catchError((err: AxiosError) => {
+          if (err.response) {
+            throw new HttpException(
+              err.response.data as string,
+              err.response.status
+            );
+          }
+          throw new HttpException(
+            err.message,
+            HttpStatus.INTERNAL_SERVER_ERROR
+          );
+        })
+      )
+    );
+    return data;
   }
 
   @Put(':id')
-  put(
+  async put(
     @Param('id') id: string,
-    @Body() exercise: WorkoutDto
-  ): Observable<Workout> {
-    return this.httpService
-      .put(`${process.env.WORKOUT_SERVICE_URL}/workouts/${id}`, exercise)
-      .pipe(map(res => res.data));
+    @Body() workout: WorkoutDto
+  ): Promise<Workout> {
+    const { data } = await firstValueFrom(
+      this.httpService.put<Workout>(`/workouts/${id}`, workout).pipe(
+        catchError((err: AxiosError) => {
+          if (err.response) {
+            throw new HttpException(
+              err.response.data as string,
+              err.response.status
+            );
+          }
+          throw new HttpException(
+            err.message,
+            HttpStatus.INTERNAL_SERVER_ERROR
+          );
+        })
+      )
+    );
+    return data;
+  }
+
+  @Delete(':id')
+  async deleteById(@Param('id') id: string): Promise<Workout> {
+    const { data } = await firstValueFrom(
+      this.httpService.delete<Workout>(`/workouts/${id}`).pipe(
+        catchError((err: AxiosError) => {
+          if (err.response) {
+            throw new HttpException(
+              err.response.data as string,
+              err.response.status
+            );
+          }
+          throw new HttpException(
+            err.message,
+            HttpStatus.INTERNAL_SERVER_ERROR
+          );
+        })
+      )
+    );
+    return data;
+  }
+
+  @Get('name/:name')
+  async findByName(@Param('name') name: string): Promise<Workout> {
+    const { data } = await firstValueFrom(
+      this.httpService.get<Workout>(`/workouts/name/${name}`).pipe(
+        catchError((err: AxiosError) => {
+          if (err.response) {
+            throw new HttpException(
+              err.response.data as string,
+              err.response.status
+            );
+          }
+          throw new HttpException(
+            err.message,
+            HttpStatus.INTERNAL_SERVER_ERROR
+          );
+        })
+      )
+    );
+    return data;
+  }
+
+  @Get('category/:category')
+  async findByCategory(@Param('category') category: string): Promise<Workout> {
+    const { data } = await firstValueFrom(
+      this.httpService.get<Workout>(`/workouts/category/${category}`).pipe(
+        catchError((err: AxiosError) => {
+          if (err.response) {
+            throw new HttpException(
+              err.response.data as string,
+              err.response.status
+            );
+          }
+          throw new HttpException(
+            err.message,
+            HttpStatus.INTERNAL_SERVER_ERROR
+          );
+        })
+      )
+    );
+    return data;
   }
 }
