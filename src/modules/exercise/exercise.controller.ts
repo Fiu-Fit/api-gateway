@@ -4,12 +4,15 @@ import {
   Controller,
   Delete,
   Get,
+  HttpException,
+  HttpStatus,
   Injectable,
   Param,
   Post,
   Put,
 } from '@nestjs/common';
-import { Observable, map } from 'rxjs';
+import { AxiosError } from 'axios';
+import { catchError, firstValueFrom } from 'rxjs';
 import { ExerciseDto } from './exercise.dto';
 import { Exercise } from './interfaces/exercise.pb';
 
@@ -18,55 +21,153 @@ import { Exercise } from './interfaces/exercise.pb';
 export class ExerciseController {
   constructor(private httpService: HttpService) {}
 
-  @Post('create')
-  create(@Body() exercise: ExerciseDto): Observable<Exercise> {
-    return this.httpService
-      .post(`${process.env.WORKOUT_SERVICE_URL}/exercises/create`, exercise)
-      .pipe(map(res => res.data));
+  @Post()
+  async create(@Body() exercise: ExerciseDto): Promise<Exercise> {
+    const { data } = await firstValueFrom(
+      this.httpService.post<Exercise>('/exercises', exercise).pipe(
+        catchError((err: AxiosError) => {
+          if (err.response) {
+            throw new HttpException(
+              err.response.data as string,
+              err.response.status
+            );
+          }
+          throw new HttpException(
+            err.message,
+            HttpStatus.INTERNAL_SERVER_ERROR
+          );
+        })
+      )
+    );
+    return data;
   }
 
   @Get()
-  findAll(): Observable<Exercise[]> {
-    return this.httpService
-      .get(`${process.env.WORKOUT_SERVICE_URL}/exercises`)
-      .pipe(map(res => res.data));
+  async findAll(): Promise<Exercise[]> {
+    const { data } = await firstValueFrom(
+      this.httpService.get<Exercise[]>('/exercises').pipe(
+        catchError((err: AxiosError) => {
+          if (err.response) {
+            throw new HttpException(
+              err.response.data as string,
+              err.response.status
+            );
+          }
+          throw new HttpException(
+            err.message,
+            HttpStatus.INTERNAL_SERVER_ERROR
+          );
+        })
+      )
+    );
+    return data;
   }
 
   @Get(':id')
-  findById(@Param('id') id: string): Observable<Exercise> {
-    return this.httpService
-      .get(`${process.env.WORKOUT_SERVICE_URL}/exercises/${id}`)
-      .pipe(map(res => res.data));
+  async findById(@Param('id') id: string): Promise<Exercise> {
+    const { data } = await firstValueFrom(
+      this.httpService.get<Exercise>(`/exercises/${id}`).pipe(
+        catchError((err: AxiosError) => {
+          if (err.response) {
+            throw new HttpException(
+              err.response.data as string,
+              err.response.status
+            );
+          }
+          throw new HttpException(
+            err.message,
+            HttpStatus.INTERNAL_SERVER_ERROR
+          );
+        })
+      )
+    );
+    return data;
   }
 
   @Put(':id')
-  put(
+  async put(
     @Param('id') id: string,
     @Body() exercise: ExerciseDto
-  ): Observable<Exercise> {
-    return this.httpService
-      .put(`${process.env.WORKOUT_SERVICE_URL}/exercises/${id}`, exercise)
-      .pipe(map(res => res.data));
+  ): Promise<Exercise> {
+    const { data } = await firstValueFrom(
+      this.httpService.put<Exercise>(`/exercises/${id}`, exercise).pipe(
+        catchError((err: AxiosError) => {
+          if (err.response) {
+            throw new HttpException(
+              err.response.data as string,
+              err.response.status
+            );
+          }
+          throw new HttpException(
+            err.message,
+            HttpStatus.INTERNAL_SERVER_ERROR
+          );
+        })
+      )
+    );
+    return data;
   }
 
   @Delete(':id')
-  deleteById(@Param('id') id: string): Observable<Exercise> {
-    return this.httpService
-      .delete(`${process.env.WORKOUT_SERVICE_URL}/exercises/${id}`)
-      .pipe(map(res => res.data));
+  async deleteById(@Param('id') id: string): Promise<Exercise> {
+    const { data } = await firstValueFrom(
+      this.httpService.delete<Exercise>(`/exercises/${id}`).pipe(
+        catchError((err: AxiosError) => {
+          if (err.response) {
+            throw new HttpException(
+              err.response.data as string,
+              err.response.status
+            );
+          }
+          throw new HttpException(
+            err.message,
+            HttpStatus.INTERNAL_SERVER_ERROR
+          );
+        })
+      )
+    );
+    return data;
   }
 
   @Get('name/:name')
-  findByName(@Param('name') name: string): Observable<Exercise> {
-    return this.httpService
-      .get(`${process.env.WORKOUT_SERVICE_URL}/exercises/name/${name}`)
-      .pipe(map(res => res.data));
+  async findByName(@Param('name') name: string): Promise<Exercise> {
+    const { data } = await firstValueFrom(
+      this.httpService.get<Exercise>(`/exercises/name/${name}`).pipe(
+        catchError((err: AxiosError) => {
+          if (err.response) {
+            throw new HttpException(
+              err.response.data as string,
+              err.response.status
+            );
+          }
+          throw new HttpException(
+            err.message,
+            HttpStatus.INTERNAL_SERVER_ERROR
+          );
+        })
+      )
+    );
+    return data;
   }
 
   @Get('category/:category')
-  findByCategory(@Param('category') category: string): Observable<Exercise[]> {
-    return this.httpService
-      .get(`${process.env.WORKOUT_SERVICE_URL}/exercises/category/${category}`)
-      .pipe(map(res => res.data));
+  async findByCategory(@Param('category') category: string): Promise<Exercise> {
+    const { data } = await firstValueFrom(
+      this.httpService.get<Exercise>(`/exercises/category/${category}`).pipe(
+        catchError((err: AxiosError) => {
+          if (err.response) {
+            throw new HttpException(
+              err.response.data as string,
+              err.response.status
+            );
+          }
+          throw new HttpException(
+            err.message,
+            HttpStatus.INTERNAL_SERVER_ERROR
+          );
+        })
+      )
+    );
+    return data;
   }
 }
