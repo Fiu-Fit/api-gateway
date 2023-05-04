@@ -9,12 +9,7 @@ import {
 } from '@nestjs/common';
 import { catchError, firstValueFrom } from 'rxjs';
 import { axiosErrorCatcher } from '../../shared/axios-error-catcher';
-import {
-  LoginRequest,
-  RegisterRequest,
-  Token,
-  ValidResponse,
-} from './interfaces/auth.pb';
+import { LoginRequest, RegisterRequest, Token } from './interfaces/auth.pb';
 
 @Injectable()
 @Controller('auth')
@@ -42,6 +37,7 @@ export class AuthController {
   }
 
   @Post('logout')
+  @HttpCode(HttpStatus.OK)
   async logout(): Promise<Token> {
     const { data } = await firstValueFrom(
       this.httpService
@@ -53,10 +49,10 @@ export class AuthController {
 
   @Post('validate')
   @HttpCode(HttpStatus.OK)
-  async validate(@Body() token: Token): Promise<ValidResponse> {
+  async validate(@Body() token: Token): Promise<number> {
     const { data } = await firstValueFrom(
       this.httpService
-        .post<ValidResponse>('/auth/validate', token)
+        .post<number>('/auth/validate', token)
         .pipe(catchError(axiosErrorCatcher))
     );
     return data;
