@@ -27,9 +27,14 @@
     "common:install": "yarn add https://github.com/Fiu-Fit/common.git",
     "proto:user": "npx protoc --plugin=node_modules/.bin/protoc-gen-ts_proto -I=./node_modules/common/protos --ts_proto_out=src/modules/user/interfaces/ node_modules/common/protos/user.proto --ts_proto_opt=nestJs=true --ts_proto_opt=fileSuffix=.pb",
     "proto:auth": "npx protoc --plugin=node_modules/.bin/protoc-gen-ts_proto -I=./node_modules/@fiu-fit/common/src/protos --ts_proto_out=src/modules/auth/interfaces/ node_modules/@fiu-fit/common/src/protos/auth.proto --ts_proto_opt=nestJs=true --ts_proto_opt=fileSuffix=.pb",
+    "proto:workout": "npx protoc --plugin=node_modules/.bin/protoc-gen-ts_proto -I=./node_modules/@fiu-fit/common/src/protos --ts_proto_out=src/modules/workout/interfaces/ node_modules/@fiu-fit/common/src/protos/workout.proto --ts_proto_opt=nestJs=true --ts_proto_opt=fileSuffix=.pb",
+    "proto:exercise": "npx protoc --plugin=node_modules/.bin/protoc-gen-ts_proto -I=./node_modules/@fiu-fit/common/src/protos --ts_proto_out=src/modules/exercise/interfaces/ node_modules/@fiu-fit/common/src/protos/exercise.proto --ts_proto_opt=nestJs=true --ts_proto_opt=fileSuffix=.pb",
+    "proto:all": "yarn run common:install && yarn run proto:user && yarn run proto:auth && yarn run proto:workout && yarn run proto:exercise",
     "proto:user:win": "npx protoc --plugin=node_modules/.bin/protoc-gen-ts_proto.cmd -I=./node_modules/@fiu-fit/common/src/protos --ts_proto_out=src/modules/user/interfaces/ node_modules/@fiu-fit/common/src/protos/user.proto --ts_proto_opt=nestJs=true --ts_proto_opt=fileSuffix=.pb",
     "proto:auth:win": "npx protoc --plugin=node_modules/.bin/protoc-gen-ts_proto.cmd -I=./node_modules/@fiu-fit/common/src/protos --ts_proto_out=src/modules/auth/interfaces/ node_modules/@fiu-fit/common/src/protos/auth.proto --ts_proto_opt=nestJs=true --ts_proto_opt=fileSuffix=.pb",
-    "proto:all:win": "yarn run common:install && yarn run proto:user:win && yarn run proto:auth:win"
+    "proto:workout:win": "npx protoc --plugin=node_modules/.bin/protoc-gen-ts_proto.cmd -I=./node_modules/@fiu-fit/common/src/protos --ts_proto_out=src/modules/workout/interfaces/ node_modules/@fiu-fit/common/src/protos/workout.proto --ts_proto_opt=nestJs=true --ts_proto_opt=fileSuffix=.pb",
+    "proto:exercise:win": "npx protoc --plugin=node_modules/.bin/protoc-gen-ts_proto.cmd -I=./node_modules/@fiu-fit/common/src/protos --ts_proto_out=src/modules/exercise/interfaces/ node_modules/@fiu-fit/common/src/protos/exercise.proto --ts_proto_opt=nestJs=true --ts_proto_opt=fileSuffix=.pb",
+    "proto:all:win": "yarn run common:install && yarn run proto:user:win && yarn run proto:auth:win && yarn run proto:workout:win && yarn run proto:exercise:win"
   },
   "prisma": {
     "seed": "ts-node ./prisma/seeder.ts"
@@ -54,6 +59,8 @@
     "firebase": "^9.19.1",
     "firebase-admin": "^11.6.0",
     "husky": "^7.0.2",
+    "mongodb": "^5.3.0",
+    "mongoose": "^7.0.4",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
