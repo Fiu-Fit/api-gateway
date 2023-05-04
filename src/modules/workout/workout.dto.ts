@@ -1,4 +1,5 @@
 import {
+  IsEnum,
   IsNotEmpty,
   IsNumber,
   IsOptional,
@@ -29,6 +30,7 @@ export class WorkoutDto {
   @IsNotEmpty()
   difficulty: number;
 
+  @IsEnum(Category)
   @IsNotEmpty()
   category: Category;
 
@@ -46,5 +48,5 @@ export class WorkoutDto {
   updatedAt: Date;
 
   @IsOptional()
-  completedAt?: Date;
+  completedAt: Date;
 }

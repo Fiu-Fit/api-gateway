@@ -39,6 +39,16 @@ export class WorkoutController {
       .pipe(map(res => res.data));
   }
 
+  @Put(':id')
+  put(
+    @Param('id') id: string,
+    @Body() workout: WorkoutDto
+  ): Observable<Workout> {
+    return this.httpService
+      .put(`${process.env.WORKOUT_SERVICE_URL}/workouts/${id}`, workout)
+      .pipe(map(res => res.data));
+  }
+
   @Delete(':id')
   deleteById(@Param('id') id: string): Observable<Workout> {
     return this.httpService
@@ -57,16 +67,6 @@ export class WorkoutController {
   findByCategory(@Param('category') category: string): Observable<Workout[]> {
     return this.httpService
       .get(`${process.env.WORKOUT_SERVICE_URL}/workouts/category/${category}`)
-      .pipe(map(res => res.data));
-  }
-
-  @Put(':id')
-  put(
-    @Param('id') id: string,
-    @Body() exercise: WorkoutDto
-  ): Observable<Workout> {
-    return this.httpService
-      .put(`${process.env.WORKOUT_SERVICE_URL}/workouts/${id}`, exercise)
       .pipe(map(res => res.data));
   }
 }
