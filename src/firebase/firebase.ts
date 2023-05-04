@@ -17,11 +17,9 @@ const firebaseParams = {
   clientX509CertUrl: process.env.FIREBASE_CLIENT_X509_CERT_URL as string,
 };
 
-admin.initializeApp({
+export const firebaseAdmin = admin.initializeApp({
   credential: admin.credential.cert(firebaseParams),
 });
-
-export default admin;
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
