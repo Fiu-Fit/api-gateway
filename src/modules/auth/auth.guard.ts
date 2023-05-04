@@ -5,12 +5,7 @@ import {
   Inject,
   Injectable,
 } from '@nestjs/common';
-import * as admin from 'firebase-admin';
-
-admin.initializeApp({
-  credential: admin.credential.applicationDefault(),
-});
-
+import { firebaseAdmin } from '../../firebase/firebase';
 import { AuthService } from './auth.service';
 
 const logger = LoggerFactory('AuthGuard');
@@ -24,7 +19,7 @@ export class AuthGuard implements CanActivate {
     const request = ctx.switchToHttp().getRequest();
     const token = request.headers.authorization.split(' ')[1];
     try {
-      const decodedToken = await admin.auth().verifyIdToken(token);
+      const decodedToken = await firebaseAdmin.auth().verifyIdToken(token);
       logger.info('token: ', decodedToken);
       request.user = decodedToken;
       return true;
