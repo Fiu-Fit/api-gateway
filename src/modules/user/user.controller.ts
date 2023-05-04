@@ -1,69 +1,114 @@
 import { Page } from '@fiu-fit/common';
+import { HttpService } from '@nestjs/axios';
 import {
   Body,
   Controller,
   Delete,
   Get,
-  Inject,
-  OnModuleInit,
+  HttpException,
+  HttpStatus,
+  Injectable,
   Param,
   ParseIntPipe,
   Put,
-  UseFilters,
   UseGuards,
 } from '@nestjs/common';
-import { ClientGrpc } from '@nestjs/microservices';
-import { Observable } from 'rxjs';
-import { AllGlobalExceptionsFilter } from '../../shared/rpc-exceptions-filter';
+import { AxiosError } from 'axios';
+import { catchError, firstValueFrom } from 'rxjs';
 import { AuthGuard } from '../auth/auth.guard';
-import {
-  USER_SERVICE_NAME,
-  User,
-  UserServiceClient,
-} from './interfaces/user.pb';
+import { User } from './interfaces/user.pb';
 import { UserDto } from './user.dto';
 
-@UseFilters(AllGlobalExceptionsFilter)
+@Injectable()
 @UseGuards(AuthGuard)
 @Controller('users')
-export class UserController implements OnModuleInit {
-  @Inject(USER_SERVICE_NAME)
-  private readonly client: ClientGrpc;
-
-  private userService: UserServiceClient;
-
-  public onModuleInit(): void {
-    this.userService =
-      this.client.getService<UserServiceClient>(USER_SERVICE_NAME);
-  }
+export class UserController {
+  constructor(private httpService: HttpService) {}
 
   @Get()
-  findAll(): Observable<Page<User>> {
-    return this.userService.findAll({});
-  }
-
-  @Delete(':id')
-  deleteById(
-    @Param('id', ParseIntPipe) id: number
-  ): Promise<User> | Observable<User> | User {
-    return this.userService.deleteById({ id });
+  async findAll(): Promise<Page<User>> {
+    const { data } = await firstValueFrom(
+      this.httpService.get<Page<User>>('/users').pipe(
+        catchError((err: AxiosError) => {
+          if (err.response) {
+            throw new HttpException(
+              err.response.data as string,
+              err.response.status
+            );
+          }
+          throw new HttpException(
+            err.message,
+            HttpStatus.INTERNAL_SERVER_ERROR
+          );
+        })
+      )
+    );
+    return data;
   }
 
   @Get(':id')
-  findById(
-    @Param('id', ParseIntPipe) id: number
-  ): Promise<User> | Observable<User> | User {
-    return this.userService.findById({ id });
+  async findById(@Param('id', ParseIntPipe) id: number): Promise<User> {
+    const { data } = await firstValueFrom(
+      this.httpService.get<User>(`/users/${id}`).pipe(
+        catchError((err: AxiosError) => {
+          if (err.response) {
+            throw new HttpException(
+              err.response.data as string,
+              err.response.status
+            );
+          }
+          throw new HttpException(
+            err.message,
+            HttpStatus.INTERNAL_SERVER_ERROR
+          );
+        })
+      )
+    );
+    return data;
+  }
+
+  @Delete(':id')
+  async deleteById(@Param('id', ParseIntPipe) id: number): Promise<User> {
+    const { data } = await firstValueFrom(
+      this.httpService.delete<User>(`/users/${id}`).pipe(
+        catchError((err: AxiosError) => {
+          if (err.response) {
+            throw new HttpException(
+              err.response.data as string,
+              err.response.status
+            );
+          }
+          throw new HttpException(
+            err.message,
+            HttpStatus.INTERNAL_SERVER_ERROR
+          );
+        })
+      )
+    );
+    return data;
   }
 
   @Put(':id')
-  put(
+  async put(
     @Param('id', ParseIntPipe) id: number,
     @Body() user: UserDto
-  ): Promise<User> | Observable<User> | User {
-    return this.userService.put({
-      id,
-      ...user,
-    });
+  ): Promise<User> {
+    const { data } = await firstValueFrom(
+      this.httpService.put<User>(`/users/${id}`, user).pipe(
+        catchError((err: AxiosError) => {
+          if (err.response) {
+            throw new HttpException(
+              err.response.data as string,
+              err.response.status
+            );
+          }
+          throw new HttpException(
+            err.message,
+            HttpStatus.INTERNAL_SERVER_ERROR
+          );
+        })
+      )
+    );
+    return data;
   }
 }

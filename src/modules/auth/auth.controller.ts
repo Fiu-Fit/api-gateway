@@ -1,61 +1,107 @@
+import { HttpService } from '@nestjs/axios';
 import {
   Body,
   Controller,
-  HttpCode,
+  HttpException,
   HttpStatus,
-  Inject,
-  OnModuleInit,
+  Injectable,
   Post,
-  UseFilters,
 } from '@nestjs/common';
-import { ClientGrpc } from '@nestjs/microservices';
-import { Observable } from 'rxjs';
-import { AllGlobalExceptionsFilter } from '../../shared/rpc-exceptions-filter';
+import { AxiosError } from 'axios';
+import { catchError, firstValueFrom } from 'rxjs';
 import {
-  AUTH_SERVICE_NAME,
-  AuthServiceClient,
   LoginRequest,
   RegisterRequest,
   Token,
   ValidResponse,
 } from './interfaces/auth.pb';
 
-@UseFilters(AllGlobalExceptionsFilter)
+@Injectable()
 @Controller('auth')
-export class AuthController implements OnModuleInit {
-  @Inject(AUTH_SERVICE_NAME)
-  private readonly client: ClientGrpc;
-
-  private authService: AuthServiceClient;
-
-  public onModuleInit(): void {
-    this.authService =
-      this.client.getService<AuthServiceClient>(AUTH_SERVICE_NAME);
-  }
+export class AuthController {
+  constructor(private httpService: HttpService) {}
 
   @Post('login')
-  @HttpCode(HttpStatus.OK)
-  login(
-    @Body() loginRequest: LoginRequest
-  ): Promise<Token> | Observable<Token> | Token {
-    return this.authService.login(loginRequest);
+  async login(@Body() loginRequest: LoginRequest): Promise<Token> {
+    const { data } = await firstValueFrom(
+      this.httpService.post<Token>('/auth/login', loginRequest).pipe(
+        catchError((err: AxiosError) => {
+          if (err.response) {
+            throw new HttpException(
+              err.response.data as string,
+              err.response.status
+            );
+          }
+          throw new HttpException(
+            err.message,
+            HttpStatus.INTERNAL_SERVER_ERROR
+          );
+        })
+      )
+    );
+    return data;
   }
 
   @Post('register')
-  register(
-    @Body() newUser: RegisterRequest
-  ): Promise<Token> | Observable<Token> | Token {
-    return this.authService.register(newUser);
+  async register(@Body() newUser: RegisterRequest): Promise<Token> {
+    const { data } = await firstValueFrom(
+      this.httpService.post<Token>('auth/register', newUser).pipe(
+        catchError((err: AxiosError) => {
+          if (err.response) {
+            throw new HttpException(
+              err.response.data as string,
+              err.response.status
+            );
+          }
+          throw new HttpException(
+            err.message,
+            HttpStatus.INTERNAL_SERVER_ERROR
+          );
+        })
+      )
+    );
+    return data;
   }
 
   @Post('logout')
-  logout() {
-    return this.authService.logout({});
+  async logout(): Promise<Token> {
+    const { data } = await firstValueFrom(
+      this.httpService.post<Token>('auth/logout').pipe(
+        catchError((err: AxiosError) => {
+          if (err.response) {
+            throw new HttpException(
+              err.response.data as string,
+              err.response.status
+            );
+          }
+          throw new HttpException(
+            err.message,
+            HttpStatus.INTERNAL_SERVER_ERROR
+          );
+        })
+      )
+    );
+    return data;
   }
 
   @Post('validate')
-  @HttpCode(HttpStatus.OK)
-  validate(@Body() token: Token): Observable<ValidResponse> {
-    return this.authService.validate(token);
+  async validate(@Body() token: Token): Promise<ValidResponse> {
+    const { data } = await firstValueFrom(
+      this.httpService.post<ValidResponse>('/auth/validate', token).pipe(
+        catchError((err: AxiosError) => {
+          if (err.response) {
+            throw new HttpException(
+              err.response.data as string,
+              err.response.status
+            );
+          }
+          throw new HttpException(
+            err.message,
+            HttpStatus.INTERNAL_SERVER_ERROR
+          );
+        })
+      )
+    );
+    return data;
   }
 }

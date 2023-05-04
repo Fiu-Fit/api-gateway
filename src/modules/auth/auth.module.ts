@@ -1,24 +1,15 @@
-import { DEFAULT_PROTO_PATH } from '@fiu-fit/common';
+import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
-import { ClientsModule, Transport } from '@nestjs/microservices';
+import { ConfigModule } from '@nestjs/config';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { AUTH_SERVICE_NAME, protobufPackage } from './interfaces/auth.pb';
 
 @Module({
   imports: [
-    // Import other modules here
-    ClientsModule.register([
-      {
-        name:      AUTH_SERVICE_NAME,
-        transport: Transport.GRPC,
-        options:   {
-          url:       process.env.USER_SERVICE_URL,
-          package:   protobufPackage,
-          protoPath: `${DEFAULT_PROTO_PATH}/auth.proto`,
-        },
-      },
-    ]),
+    ConfigModule.forRoot(),
+    HttpModule.register({
+      baseURL: process.env.USER_SERVICE_URL,
+    }),
   ],
   exports:     [AuthService],
   providers:   [AuthService],
