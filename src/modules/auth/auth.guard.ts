@@ -1,20 +1,11 @@
 import { LoggerFactory } from '@fiu-fit/common';
-import {
-  CanActivate,
-  ExecutionContext,
-  Inject,
-  Injectable,
-} from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { firebaseAdmin } from '../../firebase/firebase';
-import { AuthService } from './auth.service';
 
 const logger = LoggerFactory('AuthGuard');
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  @Inject(AuthService)
-  public readonly service: AuthService;
-
   public async canActivate(ctx: ExecutionContext): Promise<boolean> | never {
     const request = ctx.switchToHttp().getRequest();
     const token = request.headers.authorization.split(' ')[1];

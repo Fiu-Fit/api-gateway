@@ -1,5 +1,12 @@
 import { HttpService } from '@nestjs/axios';
-import { Body, Controller, Injectable, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpCode,
+  HttpStatus,
+  Injectable,
+  Post,
+} from '@nestjs/common';
 import { catchError, firstValueFrom } from 'rxjs';
 import { axiosErrorCatcher } from '../../shared/axios-error-catcher';
 import {
@@ -45,6 +52,7 @@ export class AuthController {
   }
 
   @Post('validate')
+  @HttpCode(HttpStatus.OK)
   async validate(@Body() token: Token): Promise<ValidResponse> {
     const { data } = await firstValueFrom(
       this.httpService

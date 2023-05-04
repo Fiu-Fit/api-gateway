@@ -3,7 +3,6 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ServiceConfig, ServiceName } from '../../shared/service-config';
 import { AuthController } from './auth.controller';
-import { AuthService } from './auth.service';
 
 @Module({
   imports: [
@@ -15,8 +14,8 @@ import { AuthService } from './auth.service';
       inject: [ConfigService],
     }),
   ],
-  exports:     [AuthService],
-  providers:   [AuthService],
+  exports:     [],
+  providers:   [],
   controllers: [AuthController],
 })
 export class AuthModule {}
