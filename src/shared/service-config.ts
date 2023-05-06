@@ -5,16 +5,19 @@ import { ConfigService } from '@nestjs/config';
 export const ServiceName = {
   Workout: 'workout',
   User:    'user',
+  Metrics: 'metrics',
 };
 
 export const ServiceApiKeys: Record<string, string> = {
   workout: 'WORKOUT_API_KEY',
   user:    'USER_API_KEY',
+  metrics: 'METRICS_API_KEY',
 };
 
 export const ServiceUrl: Record<string, string> = {
   workout: 'WORKOUT_SERVICE_URL',
   user:    'USER_SERVICE_URL',
+  metrics: 'METRICS_SERVICE_URL',
 };
 
 @Injectable()
