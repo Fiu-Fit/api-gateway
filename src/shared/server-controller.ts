@@ -14,7 +14,7 @@ import { axiosErrorCatcher } from './axios-error-catcher';
 
 @Controller()
 export class ServerController {
-  private httpService: HttpService;
+  protected httpService: HttpService;
 
   private entityName: string;
 
