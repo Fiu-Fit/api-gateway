@@ -2,6 +2,7 @@ import { HttpService } from '@nestjs/axios';
 import {
   Body,
   Controller,
+  Headers,
   HttpCode,
   HttpStatus,
   Injectable,
@@ -21,7 +22,18 @@ export class AuthController {
   async login(@Body() loginRequest: LoginRequest): Promise<Token> {
     const { data } = await firstValueFrom(
       this.httpService
-        .post<Token>('/auth/login', loginRequest)
+        .post<Token>('auth/login', loginRequest)
+        .pipe(catchError(axiosErrorCatcher))
+    );
+    return data;
+  }
+
+  @Post('admin/login')
+  @HttpCode(HttpStatus.OK)
+  async adminLogin(@Body() loginRequest: LoginRequest): Promise<Token> {
+    const { data } = await firstValueFrom(
+      this.httpService
+        .post<Token>('auth/admin/login', loginRequest)
         .pipe(catchError(axiosErrorCatcher))
     );
     return data;
@@ -32,6 +44,21 @@ export class AuthController {
     const { data } = await firstValueFrom(
       this.httpService
         .post<Token>('auth/register', newUser)
+        .pipe(catchError(axiosErrorCatcher))
+    );
+    return data;
+  }
+
+  @Post('admin/register')
+  async adminRegister(
+    @Headers('Authorization') authToken: string,
+    @Body() newUser: RegisterRequest
+  ): Promise<Token> {
+    const { data } = await firstValueFrom(
+      this.httpService
+        .post<Token>('auth/admin/register', newUser, {
+          headers: { Authorization: authToken },
+        })
         .pipe(catchError(axiosErrorCatcher))
     );
     return data;
