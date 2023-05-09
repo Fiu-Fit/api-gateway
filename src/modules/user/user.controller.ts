@@ -1,5 +1,15 @@
 import { HttpService } from '@nestjs/axios';
-import { Controller, Get, Injectable, Query, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Headers,
+  HttpCode,
+  HttpStatus,
+  Injectable,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { catchError, firstValueFrom } from 'rxjs';
 import { axiosErrorCatcher } from '../../shared/axios-error-catcher';
 import { ServerController } from '../../shared/server-controller';
@@ -10,7 +20,7 @@ import { User } from './interfaces/user.interface';
 @UseGuards(AuthGuard)
 @Controller('users')
 export class UserController extends ServerController {
-  constructor(httpService: HttpService) {
+  constructor(protected httpService: HttpService) {
     super(httpService, 'users');
   }
 
@@ -22,5 +32,22 @@ export class UserController extends ServerController {
         .pipe(catchError(axiosErrorCatcher))
     );
     return response.data;
+  }
+
+  @Post('me')
+  @HttpCode(HttpStatus.OK)
+  async getMe(@Headers('Authorization') bearerToken: string): Promise<User> {
+    const { data } = await firstValueFrom(
+      this.httpService
+        .post<User>(
+          '/users/me',
+          {},
+          {
+            headers: { Authorization: bearerToken },
+          }
+        )
+        .pipe(catchError(axiosErrorCatcher))
+    );
+    return data;
   }
 }

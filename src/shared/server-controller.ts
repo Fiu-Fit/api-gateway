@@ -10,42 +10,33 @@ import {
   Query,
 } from '@nestjs/common';
 import { catchError, firstValueFrom } from 'rxjs';
-import { SearchRequest } from 'src/modules/user/interfaces/user.pb';
+// import { SearchRequest } from 'src/modules/user/interfaces/user.pb';
 import { axiosErrorCatcher } from './axios-error-catcher';
 
 @Controller()
 export class ServerController {
-  protected httpService: HttpService;
-
-  private entityName: string;
-
-  constructor(httpService: HttpService, entityName: string) {
+  constructor(protected httpService: HttpService, private entityName: string) {
     this.httpService = httpService;
     this.entityName = entityName;
   }
 
+  @Post()
+  public async create(@Body() entity: any) {
+    const { data } = await firstValueFrom(
+      this.httpService
+        .post(this.entityName, entity)
+        .pipe(catchError(axiosErrorCatcher))
+    );
+
+    return data;
+  }
+
   @Get()
-  public async findAll(
-    @Query('q') q: string,
-    @Query('filters') filters: SearchRequest
-  ) {
-    // filters = JSON.parse(filters);
-    const { firstName, lastName } = filters;
-    const queryFilters = {
-      where: {
-        OR: [
-          { firstName: { contains: firstName, mode: 'insensitive' } },
-          { lastName: { contains: lastName, mode: 'insensitive' } },
-        ]
-      }
-    };
+  public async findAll(@Query() params: { [key: string]: string }) {
     const { data } = await firstValueFrom(
       this.httpService
         .get(`/${this.entityName}`, {
-          params: {
-            q,
-            filters: JSON.stringify(queryFilters),
-          },
+          params: params,
         })
         .pipe(catchError(axiosErrorCatcher))
     );
@@ -69,17 +60,6 @@ export class ServerController {
     const { data } = await firstValueFrom(
       this.httpService
         .delete(`/${this.entityName}/${id}`)
-        .pipe(catchError(axiosErrorCatcher))
-    );
-
-    return data;
-  }
-
-  @Post()
-  public async create(@Body() entity: any) {
-    const { data } = await firstValueFrom(
-      this.httpService
-        .post(this.entityName, entity)
         .pipe(catchError(axiosErrorCatcher))
     );
 

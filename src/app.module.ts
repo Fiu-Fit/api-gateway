@@ -4,6 +4,8 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './modules/auth/auth.module';
 import { ExerciseModule } from './modules/exercise/exercise.module';
+import { GoalModule } from './modules/goals/goal.module';
+import { MetricsModule } from './modules/metrics/metrics.module';
 import { UserModule } from './modules/user/user.module';
 import { WorkoutModule } from './modules/workout/workout.module';
 
@@ -14,6 +16,8 @@ import { WorkoutModule } from './modules/workout/workout.module';
     ExerciseModule,
     AuthModule,
     UserModule,
+    MetricsModule,
+    GoalModule,
   ],
   controllers: [AppController],
   providers:   [AppService],
