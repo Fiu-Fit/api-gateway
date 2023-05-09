@@ -31,17 +31,11 @@ export class ServerController {
   }
 
   @Get()
-  public async findAll(
-    @Query('q') q: string,
-    @Query('filters') filters: string
-  ) {
+  public async findAll(@Query() params: { [key: string]: string }) {
     const { data } = await firstValueFrom(
       this.httpService
         .get(`/${this.entityName}`, {
-          params: {
-            q,
-            filters,
-          },
+          params: params,
         })
         .pipe(catchError(axiosErrorCatcher))
     );
