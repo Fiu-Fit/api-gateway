@@ -23,3 +23,9 @@ export interface UserPages {
   rows: User[];
   count: number;
 }
+
+export interface SearchRequest {
+  email?: string;
+  firstName?: string;
+  lastName?: string;
+}
