@@ -10,6 +10,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { catchError, firstValueFrom } from 'rxjs';
+import { SearchRequest } from 'src/modules/user/interfaces/user.pb';
 import { axiosErrorCatcher } from './axios-error-catcher';
 
 @Controller()
@@ -26,14 +27,24 @@ export class ServerController {
   @Get()
   public async findAll(
     @Query('q') q: string,
-    @Query('filters') filters: string
+    @Query('filters') filters: SearchRequest
   ) {
+    // filters = JSON.parse(filters);
+    const { firstName, lastName } = filters;
+    const queryFilters = {
+      where: {
+        OR: [
+          { firstName: { contains: firstName, mode: 'insensitive' } },
+          { lastName: { contains: lastName, mode: 'insensitive' } },
+        ]
+      }
+    };
     const { data } = await firstValueFrom(
       this.httpService
         .get(`/${this.entityName}`, {
           params: {
             q,
-            filters,
+            filters: JSON.stringify(queryFilters),
           },
         })
         .pipe(catchError(axiosErrorCatcher))
