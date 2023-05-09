@@ -2,6 +2,7 @@ import { HttpService } from '@nestjs/axios';
 import {
   Body,
   Controller,
+  Headers,
   HttpCode,
   HttpStatus,
   Injectable,
@@ -9,7 +10,11 @@ import {
 } from '@nestjs/common';
 import { catchError, firstValueFrom } from 'rxjs';
 import { axiosErrorCatcher } from '../../shared/axios-error-catcher';
-import { LoginRequest, RegisterRequest, Token } from './interfaces/auth.pb';
+import {
+  LoginRequest,
+  RegisterRequest,
+  Token,
+} from './interfaces/auth.interface';
 
 @Injectable()
 @Controller('auth')
@@ -21,7 +26,18 @@ export class AuthController {
   async login(@Body() loginRequest: LoginRequest): Promise<Token> {
     const { data } = await firstValueFrom(
       this.httpService
-        .post<Token>('/auth/login', loginRequest)
+        .post<Token>('auth/login', loginRequest)
+        .pipe(catchError(axiosErrorCatcher))
+    );
+    return data;
+  }
+
+  @Post('admin/login')
+  @HttpCode(HttpStatus.OK)
+  async adminLogin(@Body() loginRequest: LoginRequest): Promise<Token> {
+    const { data } = await firstValueFrom(
+      this.httpService
+        .post<Token>('auth/admin/login', loginRequest)
         .pipe(catchError(axiosErrorCatcher))
     );
     return data;
@@ -37,23 +53,27 @@ export class AuthController {
     return data;
   }
 
+  @Post('admin/register')
+  async adminRegister(
+    @Headers('Authorization') authToken: string,
+    @Body() newUser: RegisterRequest
+  ): Promise<Token> {
+    const { data } = await firstValueFrom(
+      this.httpService
+        .post<Token>('auth/admin/register', newUser, {
+          headers: { Authorization: authToken },
+        })
+        .pipe(catchError(axiosErrorCatcher))
+    );
+    return data;
+  }
+
   @Post('logout')
   @HttpCode(HttpStatus.OK)
   async logout(): Promise<Token> {
     const { data } = await firstValueFrom(
       this.httpService
         .post<Token>('auth/logout')
-        .pipe(catchError(axiosErrorCatcher))
-    );
-    return data;
-  }
-
-  @Post('validate')
-  @HttpCode(HttpStatus.OK)
-  async validate(@Body() token: Token): Promise<number> {
-    const { data } = await firstValueFrom(
-      this.httpService
-        .post<number>('/auth/validate', token)
         .pipe(catchError(axiosErrorCatcher))
     );
     return data;

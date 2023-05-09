@@ -14,13 +14,20 @@ import { axiosErrorCatcher } from './axios-error-catcher';
 
 @Controller()
 export class ServerController {
-  private httpService: HttpService;
-
-  private entityName: string;
-
-  constructor(httpService: HttpService, entityName: string) {
+  constructor(protected httpService: HttpService, private entityName: string) {
     this.httpService = httpService;
     this.entityName = entityName;
+  }
+
+  @Post()
+  public async create(@Body() entity: any) {
+    const { data } = await firstValueFrom(
+      this.httpService
+        .post(this.entityName, entity)
+        .pipe(catchError(axiosErrorCatcher))
+    );
+
+    return data;
   }
 
   @Get()
@@ -52,17 +59,6 @@ export class ServerController {
     const { data } = await firstValueFrom(
       this.httpService
         .delete(`/${this.entityName}/${id}`)
-        .pipe(catchError(axiosErrorCatcher))
-    );
-
-    return data;
-  }
-
-  @Post()
-  public async create(@Body() entity: any) {
-    const { data } = await firstValueFrom(
-      this.httpService
-        .post(this.entityName, entity)
         .pipe(catchError(axiosErrorCatcher))
     );
 
