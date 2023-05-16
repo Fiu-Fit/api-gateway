@@ -1,11 +1,16 @@
 import { HttpService } from '@nestjs/axios';
 import {
+  Body,
   Controller,
+  Delete,
+  Get,
   Headers,
   HttpCode,
   HttpStatus,
   Injectable,
+  Param,
   Post,
+  Put,
   UseGuards,
 } from '@nestjs/common';
 import { catchError, firstValueFrom } from 'rxjs';
@@ -34,6 +39,42 @@ export class UserController extends ServerController {
             headers: { Authorization: bearerToken },
           }
         )
+        .pipe(catchError(axiosErrorCatcher))
+    );
+    return data;
+  }
+
+  @Get(':id/favoriteWorkouts')
+  async getFavoriteWorkouts(@Param('id') id: number): Promise<User> {
+    const { data } = await firstValueFrom(
+      this.httpService
+        .get<User>(`/users/${id}/favoriteWorkouts`)
+        .pipe(catchError(axiosErrorCatcher))
+    );
+    return data;
+  }
+
+  @Put(':id/favoriteWorkouts')
+  async addFavoriteWorkout(
+    @Param('id') id: number,
+    @Body('workoutId') workoutId: string
+  ): Promise<User> {
+    const { data } = await firstValueFrom(
+      this.httpService
+        .put<User>(`/users/${id}/favoriteWorkouts`, { workoutId })
+        .pipe(catchError(axiosErrorCatcher))
+    );
+    return data;
+  }
+
+  @Delete(':id/favoriteWorkouts/:workoutId')
+  async removeFavoriteWorkout(
+    @Param('id') id: number,
+    @Param('workoutId') workoutId: string
+  ): Promise<User> {
+    const { data } = await firstValueFrom(
+      this.httpService
+        .delete<User>(`/users/${id}/favoriteWorkouts/${workoutId}`)
         .pipe(catchError(axiosErrorCatcher))
     );
     return data;
