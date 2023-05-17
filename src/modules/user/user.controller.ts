@@ -1,3 +1,4 @@
+import { Workout } from '@fiu-fit/common';
 import { HttpService } from '@nestjs/axios';
 import {
   Body,
@@ -45,10 +46,10 @@ export class UserController extends ServerController {
   }
 
   @Get(':id/favoriteWorkouts')
-  async getFavoriteWorkouts(@Param('id') id: number): Promise<User> {
+  async getFavoriteWorkouts(@Param('id') id: number): Promise<Workout[]> {
     const { data } = await firstValueFrom(
       this.httpService
-        .get<User>(`/users/${id}/favoriteWorkouts`)
+        .get<Workout[]>(`/users/${id}/favoriteWorkouts`)
         .pipe(catchError(axiosErrorCatcher))
     );
     return data;
