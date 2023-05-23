@@ -17,7 +17,7 @@ export class MetricsController {
     const { data } = await firstValueFrom(
       this.httpService
         .get<Page<User>>('metrics/login', {
-          params:  { ...filter },
+          params:  filter,
           headers: { Authorization: authToken },
         })
         .pipe(catchError(axiosErrorCatcher))
@@ -34,7 +34,7 @@ export class MetricsController {
     const { data } = await firstValueFrom(
       this.httpService
         .get<Page<User>>('metrics/register', {
-          params:  { ...filter },
+          params:  filter,
           headers: { Authorization: authToken },
         })
         .pipe(catchError(axiosErrorCatcher))
@@ -51,7 +51,7 @@ export class MetricsController {
     const { data } = await firstValueFrom(
       this.httpService
         .get<Page<User>>('metrics/password-reset', {
-          params:  { ...filter },
+          params:  filter,
           headers: { Authorization: authToken },
         })
         .pipe(catchError(axiosErrorCatcher))
