@@ -7,6 +7,7 @@ import { ExerciseModule } from './modules/exercise/exercise.module';
 import { FollowerModule } from './modules/followers/follower.module';
 import { GoalModule } from './modules/goals/goal.module';
 import { MetricsModule } from './modules/metrics/metrics.module';
+import { ProgressModule } from './modules/progress/progress.module';
 import { RatingModule } from './modules/ratings/rating.module';
 import { UserModule } from './modules/user/user.module';
 import { WorkoutModule } from './modules/workout/workout.module';
@@ -18,8 +19,9 @@ import { WorkoutModule } from './modules/workout/workout.module';
     ExerciseModule,
     AuthModule,
     UserModule,
-    MetricsModule,
+    ProgressModule,
     GoalModule,
+    MetricsModule,
     RatingModule,
     FollowerModule,
   ],

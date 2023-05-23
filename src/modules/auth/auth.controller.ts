@@ -78,4 +78,16 @@ export class AuthController {
     );
     return data;
   }
+
+  @Post('password-reset')
+  async passwordReset(@Headers('Authorization') bearerToken: string) {
+    const { data } = await firstValueFrom(
+      this.httpService
+        .post<Token>('auth/password-reset', null, {
+          headers: { Authorization: bearerToken },
+        })
+        .pipe(catchError(axiosErrorCatcher))
+    );
+    return data;
+  }
 }
