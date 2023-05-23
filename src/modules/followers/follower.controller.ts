@@ -25,12 +25,12 @@ export class FollowerController extends ServerController {
 
   @Post('follow')
   async followUser(
-    @Query('id') id: number,
+    @Query('userId') userId: number,
     @Body('userIdToFollow') userIdToFollow: number
   ) {
     const { data } = await firstValueFrom(
       this.httpService
-        .post('/followers/follow', { userIdToFollow }, { params: { id } })
+        .post('/followers/follow', { userIdToFollow }, { params: { userId } })
         .pipe(catchError(axiosErrorCatcher))
     );
     return data;
@@ -38,32 +38,32 @@ export class FollowerController extends ServerController {
 
   @Delete('unfollow')
   async unfollowUser(
-    @Query('id') id: number,
+    @Query('userId') userId: number,
     @Query('followerId') followerId: number
   ) {
     const { data } = await firstValueFrom(
       this.httpService
-        .delete<User>('/followers/unfollow', { params: { id, followerId } })
+        .delete<User>('/followers/unfollow', { params: { userId, followerId } })
         .pipe(catchError(axiosErrorCatcher))
     );
     return data;
   }
 
   @Get('followers')
-  async getFollowers(@Query('id') id: number): Promise<User[]> {
+  async getFollowers(@Query('userId') userId: number): Promise<User[]> {
     const { data } = await firstValueFrom(
       this.httpService
-        .get<User[]>('/followers/followers', { params: { id } })
+        .get<User[]>('/followers/followers', { params: { userId } })
         .pipe(catchError(axiosErrorCatcher))
     );
     return data;
   }
 
   @Get('following')
-  async getFollowing(@Query('id') id: number): Promise<User[]> {
+  async getFollowing(@Query('userId') userId: number): Promise<User[]> {
     const { data } = await firstValueFrom(
       this.httpService
-        .get<User[]>('/followers/following', { params: { id } })
+        .get<User[]>('/followers/following', { params: { userId } })
         .pipe(catchError(axiosErrorCatcher))
     );
     return data;

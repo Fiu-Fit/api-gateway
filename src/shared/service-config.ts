@@ -17,7 +17,7 @@ export const ServiceApiKeys: Record<string, string> = {
   metrics:   'METRICS_API_KEY',
   goals:     'GOALS_API_KEY',
   ratings:   'RATINGS_API_KEY',
-  followers: 'FOLLOWERS_API_KEY',
+  followers: 'USER_API_KEY',
 };
 
 export const ServiceUrl: Record<string, string> = {
@@ -26,7 +26,7 @@ export const ServiceUrl: Record<string, string> = {
   metrics:   'METRICS_SERVICE_URL',
   goals:     'GOALS_SERVICE_URL',
   ratings:   'RATINGS_SERVICE_URL',
-  followers: 'FOLLOWERS_SERVICE_URL',
+  followers: 'USER_SERVICE_URL',
 };
 
 @Injectable()
